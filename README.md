@@ -50,3 +50,19 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
   python3 collect_data/FEMA-HRI/FilterHRI.py
   ```
     * Formats raw_data and filters data to only relevant disasters 
+
+## Dam Data Processing
+
+This component processes dam data from the National Inventory of Dams. **Note:** The dataset (`nation.csv`) and the resulting output JSON file (`dam_data.json`) are very large and are not included in this repository.
+
+### Setup
+
+- Download the National Inventory of Dams CSV file and save it as `nation.csv` in the project root directory.
+
+### Running the Dam Data Code
+
+The dam data processing is managed by the `dams.py` script.
+
+To run the dam data processing, execute:
+```bash
+python3 dams.py
