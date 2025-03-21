@@ -1,6 +1,6 @@
 # HURRICANE READINESS
 
-Final Project for EECS 486: Information Retrieval 
+Final Project for EECS 486: Information Retrieval
 
 ## ABOUT
 
@@ -14,7 +14,29 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
 
 ## SET-UP PROJECT
 
-1.) Install [Python3.8](https://www.python.org/downloads/) or later
+### General Python Set-Up
+
+1.) Install [Python3.X](https://www.python.org/downloads/)
 
 2.) Run the following `pip install -r requirements.txt`
+
+### Data Collection Set-Up
+
+#### Disaster Declaration Summaries
+
+- Download [FEMA Disaster Declarations Summaries](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2) and save it as:  
+  `raw_data/DisasterDeclarationsSummaries/all_disasters.json`
+
+- Run the following command to format and filter the raw data:  
+  ```bash
+  python3 collect_data/FormatInitialFEMADisasterDeclarationSummaries.py
+  ```
+    * Formats raw_data and filters data to only relevant disasters 
+
+- When attempting to update your dataset run  
+  ```bash
+  python3 collect_data/UpdateFEMADisasterDeclarationSummaries.py
+  ```
+
+
 
