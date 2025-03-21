@@ -25,18 +25,26 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
 #### Disaster Declaration Summaries
 
 - Download [FEMA Disaster Declarations Summaries](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2) and save it as:  
-  `raw_data/DisasterDeclarationsSummaries/all_disasters.json`
+  `raw_data/FEMA-DDS/all_disasters.json`
 
 - Run the following command to format and filter the raw data:  
   ```bash
-  python3 collect_data/FormatInitialFEMADisasterDeclarationSummaries.py
+  python3 collect_data/FEMA-DDS/FilterDDS.py
   ```
     * Formats raw_data and filters data to only relevant disasters 
 
 - When attempting to update your dataset run  
   ```bash
-  python3 collect_data/UpdateFEMADisasterDeclarationSummaries.py
+  python3 collect_data/FEMA-DDS/UpdateDDS.py
   ```
 
+#### FEMA-HRI
 
+- Download [FEMA Hurricane Risk Index](https://hazards.fema.gov/nri/data-resources) and save it as:  
+  `raw_data/FEMA-HRI/all_counties.json`
 
+- Run the following command to format and filter the raw data:  
+  ```bash
+  python3 collect_data/FEMA-HRI/FilterHRI.py
+  ```
+    * Formats raw_data and filters data to only relevant disasters 
