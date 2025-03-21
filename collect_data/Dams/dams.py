@@ -39,7 +39,7 @@ def export_to_json(df, output_path):
     with open(output_path, "w") as f:
         json.dump(structured_output, f, indent=2)
 
-    print(f"✅ Exported {len(records)} formatted dam records to '{output_path}'")
+    print(f"Exported {len(records)} formatted dam records to '{output_path}'")
 
 # Main
 def main():
