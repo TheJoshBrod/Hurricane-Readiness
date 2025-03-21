@@ -15,7 +15,7 @@ def apply_filter(df: pd.DataFrame) -> dict:
     
     data = {}
     for region, states in fema_region_codes.items():
-        filtered_df = df[df["STATEABBRV"].isin(states)]
+        filtered_df = df[(df["STATEABBRV"].isin(states)) & (df["COUNTYTYPE"] == "County")]
         json_data = filtered_df.to_json(orient="records", lines=False)
         data[region] = json.loads(json_data)
 

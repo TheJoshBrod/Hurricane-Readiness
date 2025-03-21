@@ -47,4 +47,6 @@ Icon
 .dropbox*
 
 
-raw_data/
+*.csv
+*.json
+
