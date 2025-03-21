@@ -1,51 +1,31 @@
-import geopandas as gpd
+import pandas as pd
 import json
-import os
 
-# Replace with your actual file path
-FILE_PATH = "collect_data/Dams/nation.gpkg"
-OUTPUT_JSON = "filtered_dams.json"
+# Read the CSV file, skipping the first row with metadata.
+df = pd.read_csv("nation.csv", skiprows=1)
 
-# Load GeoPackage
-def load_dataset(file_path):
-    print("📦 Loading GeoPackage...")
-    return gpd.read_file(file_path)
+# Define the relevant columns from the CSV.
+relevant_columns = [
+    "Dam Name",
+    "NID ID",
+    "Primary Purpose",
+    "Latitude",
+    "Longitude",
+    "State",
+    "County",
+    "City",
+    "Year Completed",
+    "Website URL"
+]
 
-# Filter dam-related records
-def filter_dams(df):
-    dam_keywords = ["dam"]
-    dam_mask = df.apply(lambda row: row.astype(str).str.contains('|'.join(dam_keywords), case=False).any(), axis=1)
-    return df[dam_mask]
+# Filter the DataFrame to only include the relevant columns.
+filtered_df = df[relevant_columns]
 
-# Export in FEMA-like structure
-def export_to_json(df, output_path):
-    records = []
-    for _, row in df.iterrows():
-        record = {
-            "damName": row.get("DAM_NAME", "Unknown"),
-            "state": row.get("STATE", "Unknown"),
-            "county": row.get("COUNTY", "Unknown"),
-            "yearCompleted": row.get("YEAR_COMPLETED", None),
-            "hazardPotential": row.get("HAZARD", "Unknown"),
-            "longitude": row.geometry.x if row.geometry else None,
-            "latitude": row.geometry.y if row.geometry else None,
-        }
-        records.append(record)
+# Convert the filtered DataFrame to a list of dictionaries.
+dam_data = filtered_df.to_dict(orient="records")
 
-    structured_output = {
-        "DamSummaries": records
-    }
+with open("dam_data.json", "w") as json_file:
+    json.dump(dam_data, json_file, indent=4)
 
-    with open(output_path, "w") as f:
-        json.dump(structured_output, f, indent=2)
+print("JSON file 'dam_data.json' created successfully!")
 
-    print(f"Exported {len(records)} formatted dam records to '{output_path}'")
-
-# Main
-def main():
-    df = load_dataset(FILE_PATH)
-    dam_df = filter_dams(df)
-    export_to_json(dam_df, OUTPUT_JSON)
-
-if __name__ == "__main__":
-    main()
