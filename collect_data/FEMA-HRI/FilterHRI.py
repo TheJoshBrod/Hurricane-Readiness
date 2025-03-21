@@ -15,9 +15,11 @@ def apply_filter(df: pd.DataFrame) -> dict:
     
     data = {}
     for region, states in fema_region_codes.items():
-        filtered_df = df[df["STATE"].isin(states)]
+        filtered_df = df[df["STATEABBRV"].isin(states)]
         filtered_data = filtered_df.to_dict()
-        data[region] = filtered_data
+        json_data = filtered_df.to_json(orient="records", lines=False)
+        # print(json_data)
+        data[region] = json.loads(json_data)
 
     return data
 
@@ -51,7 +53,7 @@ def main():
 
     # Remove extraneous data
     data = apply_filter(unfiltered_data)
-    print(data)
+    # print(data)
 
     """
     ***************************
