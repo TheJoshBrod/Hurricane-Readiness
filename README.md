@@ -40,7 +40,9 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
 
 #### FEMA-HRI
 
-- Download [FEMA Hurricane Risk Index](https://hazards.fema.gov/nri/data-resources), clicking `Table format (CSV)`, and save it as:  
+- Download [FEMA Hurricane Risk Index](https://hazards.fema.gov/nri/data-resources#csvDownload), clicking `All Counties - County-level detail (Table)`
+
+- Unzip the file and take out `NRI_Table_Counties.csv` and save it as:  
   `raw_data/FEMA-HRI/all_counties.csv`
 
 - Run the following command to format and filter the raw data:  
