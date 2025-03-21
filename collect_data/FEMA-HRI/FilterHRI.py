@@ -16,9 +16,7 @@ def apply_filter(df: pd.DataFrame) -> dict:
     data = {}
     for region, states in fema_region_codes.items():
         filtered_df = df[df["STATEABBRV"].isin(states)]
-        filtered_data = filtered_df.to_dict()
         json_data = filtered_df.to_json(orient="records", lines=False)
-        # print(json_data)
         data[region] = json.loads(json_data)
 
     return data
@@ -36,7 +34,7 @@ def main():
     if not os.path.exists("raw_data/FEMA-HRI/all_counties.csv"):
         print("Error: all_counties.json does NOT exist")
         return
-    if os.path.exists("raw_data/DisasterDeclarationsSummaries/filtered_counties.json"):
+    if os.path.exists("raw_data/FEMA-HRI/filtered_counties.json"):
         print("Error: filtered_counties.json ALREADY exists")
         return
 
@@ -53,7 +51,6 @@ def main():
 
     # Remove extraneous data
     data = apply_filter(unfiltered_data)
-    # print(data)
 
     """
     ***************************
