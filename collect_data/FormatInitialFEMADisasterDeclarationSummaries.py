@@ -9,7 +9,8 @@ def apply_filter(raw_data: dict) -> dict:
     data = []
     for disaster in raw_data["DisasterDeclarationsSummaries"]:
         
-        incident_types = {
+    
+        designated_incident_types = {
             "Hurricane": "H",
             "Dam/Levee Break": "K",
             "Flood": "F",
@@ -17,13 +18,28 @@ def apply_filter(raw_data: dict) -> dict:
             "Tropical Storm": "4",
             "Tropical Depression": "8"
         } 
-        disaster_codes = list(incident_types.values())
+        disaster_codes = list(designated_incident_types.values())
         if disaster["designatedIncidentTypes"] not in disaster_codes:
-            continue 
+            if disaster["designatedIncidentTypes"] != None:
+                continue
+
+            # Checks if dataset is missing designatedIncidentType, if any other hints that its relevant
+            found_keyword = False
+            keywords = ["hurricane","dam","flood","water","rain","storm"]
+            for word in keywords: 
+                if word in disaster["incidentType"].lower():
+                    found_keyword = True
+                    break
+                if word in disaster["incidentType"].lower():
+                    found_keyword = True
+                    break
+
+            if not found_keyword:
+                continue
 
         # East Coast and South (see fema_regions_map.png for more info)
         regions = (1,2,3,4,6)
-        if disaster["region"] < 4 and disaster["region"] != 6:
+        if disaster["region"] > 4 and disaster["region"] != 6:
             continue 
 
         data.append(disaster)
@@ -44,7 +60,7 @@ def main():
     if not os.path.exists("raw_data/DisasterDeclarationsSummaries/all_disasters.json"):
         print("Error: all_disasters.json does NOT exist")
         return
-    if not os.path.exists("raw_data/DisasterDeclarationsSummaries/filtered_disasters.json"):
+    if os.path.exists("raw_data/DisasterDeclarationsSummaries/filtered_disasters.json"):
         print("Error: filtered_disasters.json ALREADY exists")
         return
 
