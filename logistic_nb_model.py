@@ -9,6 +9,7 @@ Original file is located at
 
 from sklearn.datasets import load_iris
 
+#import data from preporcess script here instead of iris
 iris = load_iris()
 
 import torch
@@ -16,12 +17,14 @@ from torch import tensor
 from torch.optim import SGD
 from torch import floor
 
+#convert data to tensors so that pytorch can operate it
 X = tensor(iris.data, dtype=torch.float)
 y = tensor(iris.target, dtype=torch.float)
 y = (y >= 1) * 1.
 
 from torch import sigmoid
 
+#check logistic loss
 def log_loss(h,y):
   L = -y * torch.log(h) - (1-y) * torch.log(1-h)
   J = L.mean()
@@ -31,21 +34,21 @@ from torch.nn import Module, Parameter
 from torch.distributions.normal import Normal
 
 class Logistic (Module):
-
+  #constructor
   def __init__ (self):
     Module.__init__(self)
     self.w = Parameter(Normal(0., 0.1).sample((4,)).requires_grad_())
     self.b = Parameter(tensor(0., dtype = torch.float).requires_grad_())
-
+  #sigmoid calculation
   def forward (self, X):
     z = X @ self.w + self.b
     h = sigmoid(z)
     return h
-
+#check how accurate the model is to iris(won't apply to us)
 def accuracy(h,y):
   yhat = floor(h + 0.5)
   return ((yhat == y) * 1.).mean()
-
+#the whole process to do a step forward
 def step (model, X, y, lossf, optz):
   h = model(X)
   J = lossf(h, y)
@@ -53,7 +56,7 @@ def step (model, X, y, lossf, optz):
   J.backward()
   optz.step()
   model.zero_grad()
-
+#train the model
 def train (X, y, stepsize, nepochs):
   model = Logistic()
   sgd = SGD(model.parameters(), lr=stepsize)
@@ -69,13 +72,14 @@ if __name__ == "__main__":
   model(X)
 
   J = log_loss(model(X), y)
-
+  """
   print(model.w)
   print(model.b)
   print(list(model.parameters()))
   print(dict(model.named_parameters()))
   print(model.w.data)
-  print(model.w)  
+  print(model.w)
+  """
 
   J.backward()
 
@@ -83,7 +87,7 @@ if __name__ == "__main__":
   print(model.b.grad)
 
   sgd = SGD(model.parameters(), lr = 0.01)
-
+  """
   print(model.w.data - 0.01 * model.w.grad)
   print(model.b)
   print(model.w)
@@ -95,19 +99,15 @@ if __name__ == "__main__":
   print(model.zero_grad())
   print(model.w.grad)
   print(model.b.grad)
-
-
-  step(model, X, y, log_loss, sgd)
+  """
 
   step(model, X, y, log_loss, sgd)
-
+  step(model, X, y, log_loss, sgd)
   print(model.w)
-
+  
   h = model(X)
   print(h)
-
   print(floor(h + 0.5))
-
   print(accuracy(h,y))
 
   train(X, y, 0.001, 1000)
