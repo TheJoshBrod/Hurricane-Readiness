@@ -13,6 +13,8 @@ iris = load_iris()
 
 import torch
 from torch import tensor
+from torch.optim import SGD
+from torch import floor
 
 X = tensor(iris.data, dtype=torch.float)
 y = tensor(iris.target, dtype=torch.float)
@@ -40,56 +42,6 @@ class Logistic (Module):
     h = sigmoid(z)
     return h
 
-model = Logistic()
-
-model(X)
-
-J = log_loss(model(X), y)
-J
-
-model.w
-
-model.b
-
-list(model.parameters())
-
-dict(model.named_parameters())
-
-model.w.data
-
-model.w
-
-J.backward()
-
-model.w.grad
-
-model.b.grad
-
-from torch.optim import SGD
-sgd = SGD(model.parameters(), lr = 0.01)
-
-model.w.data - 0.01 * model.w.grad
-
-model.b
-
-model.w
-
-sgd.step()
-
-model.w
-
-model.b
-
-model.w.data
-
-model.w.grad
-
-model.zero_grad()
-
-model.w.grad
-
-model.b.grad
-
 def accuracy(h,y):
   yhat = floor(h + 0.5)
   return ((yhat == y) * 1.).mean()
@@ -102,22 +54,6 @@ def step (model, X, y, lossf, optz):
   optz.step()
   model.zero_grad()
 
-step(model, X, y, log_loss, sgd)
-
-step(model, X, y, log_loss, sgd)
-
-model.w
-
-h = model(X)
-h
-
-from torch import floor
-floor(h + 0.5)
-
-
-
-accuracy(h,y)
-
 def train (X, y, stepsize, nepochs):
   model = Logistic()
   sgd = SGD(model.parameters(), lr=stepsize)
@@ -125,10 +61,53 @@ def train (X, y, stepsize, nepochs):
     step(model, X, y, log_loss, sgd)
   return model
 
-train(X, y, 0.001, 1000)
 
-model = Logistic()
-sgd = SGD(model.parameters(), lr=0.001)
-step(model, X, y, log_loss, sgd)
+if __name__ == "__main__":
 
-step(model, X, y, log_loss, sgd)
+  model = Logistic()
+
+  model(X)
+
+  J = log_loss(model(X), y)
+
+  print(model.w)
+  print(model.b)
+  print(list(model.parameters()))
+  print(dict(model.named_parameters()))
+  print(model.w.data)
+  print(model.w)  
+
+  J.backward()
+
+  print(model.w.grad)
+  print(model.b.grad)
+
+  sgd = SGD(model.parameters(), lr = 0.01)
+
+  print(model.w.data - 0.01 * model.w.grad)
+  print(model.b)
+  print(model.w)
+  print(sgd.step())
+  print(model.w)
+  print(model.b)
+  print(model.w.data)
+  print(model.w.grad)
+  print(model.zero_grad())
+  print(model.w.grad)
+  print(model.b.grad)
+
+
+  step(model, X, y, log_loss, sgd)
+
+  step(model, X, y, log_loss, sgd)
+
+  print(model.w)
+
+  h = model(X)
+  print(h)
+
+  print(floor(h + 0.5))
+
+  print(accuracy(h,y))
+
+  train(X, y, 0.001, 1000)
