@@ -1,0 +1,12 @@
+Input:
+- Feature Name     - Description                                  - Dataset
+-------------------------------------------------------------------------------------------------------
+- POPULATION       - Population per COUNTY                        - FEMA HRI Dataset
+- Hurricane Freq   - Hurricanes per year in 5/10/20 years         - FEMA DDS Dataset
+- BUILDVALUE       - Value of all existing buildings              - FEMA HRI Dataset
+- AGRIVALUE        - Value of all existing agriculture            - FEMA HRI Dataset  
+- DAMS COUNT       - Number of dams in a county                   - National Inventory of Dams Dataset
+- DAM HAZARD SCORE - Average hazard rating for dams in the county - National Inventory of Dams Dataset
+
+Output:
+- EAL - Estimated Annual Loss (building and agriculture loss combined)
