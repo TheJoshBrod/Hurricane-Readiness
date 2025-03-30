@@ -21,6 +21,8 @@ def load_fema_data():
     df['EAL'] = df['HRCN_EALB'] + df['HRCN_EALA']
     df = df.drop(['HRCN_EALB', 'HRCN_EALA'], axis=1)
 
+    df['EALN'] = df['EAL'] / df['POPULATION']
+
     if os.path.exists(folder_path):
         shutil.rmtree(folder_path)
 
