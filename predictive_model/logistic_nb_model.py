@@ -4,7 +4,7 @@ import os
 # Add the parent directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from preprocess import load_predicitve_data
+from processed_data.preprocess import load_predicitve_data
 
 
 

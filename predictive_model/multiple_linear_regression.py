@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 # load data from preprocess
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from preprocess import load_predicitve_data
+from processed_data.preprocess import load_predicitve_data
 df = load_predicitve_data()
 df = df.dropna()
 #X = df[["POPULATION", "DISASTER_PER_YEAR_20"]]

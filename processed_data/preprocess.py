@@ -130,20 +130,7 @@ def load_predicitve_data():
     
     df = df[df["STATEABBRV"].isin(states)]
 
-    # df = df[df['EAL'] < 4.274738e05]
-    
-    # # Create the box plot
-    # plt.figure(figsize=(8, 5))
-    # plt.boxplot(df['EAL'], patch_artist=True, notch=True)
-
-    # # Customizations
-    # plt.title("Box Plot Example")
-    # plt.xlabel("Groups")
-    # plt.ylabel("Values")
-    # plt.grid(True, linestyle="--", alpha=0.6)
-
-    # plt.savefig("test.png")
-    return df
+    df.to_csv("output.csv", index=False)
 
 if __name__ == "__main__":
     load_predicitve_data()

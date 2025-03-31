@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
+import pandas as pd
 
 class Neural_Network(torch.nn.Module):
     def __init__(self) -> None:
@@ -51,8 +52,10 @@ def train_nn(model: Neural_Network, X_train, y_train, optimizer, criterion, epoc
 if __name__ == "__main__":
     # Load Data
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-    from preprocess import load_predicitve_data
-    df = load_predicitve_data()
+    from processed_data.preprocess import load_predicitve_data
+    # df = load_predicitve_data()
+    df = pd.read_csv("processed_data/data.csv")
+    
     df = df.dropna()
     scaler = StandardScaler()
     columns = ["POPULATION", "BUILDVALUE", 'HRCN_EALP',

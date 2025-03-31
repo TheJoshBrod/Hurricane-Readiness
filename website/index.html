@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hurricane Readiness</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+        
+        $("#content").empty()
+        $('#dropdown').select2();
+
+        // Detect when dropdown state changes and fetch state data
+        $('#dropdown').on('change', function() {
+                const selectedState = $(this).val();
+                if (selectedState === ""){
+                    $("#content").empty()
+                    return;
+                }
+                $("#content").text("loading...")
+                fetchFilteredData(selectedState); 
+                
+            });
+        });
+
+        // Function to fetch filtered data based on the selected state
+        function fetchFilteredData(state) {
+            // Make fetch for requested state 
+            fetch(`http://127.0.0.1:5000/?state=${state}`)
+                .then(response => response.text())
+                .then(html => {
+                    // Update html with predictions table
+                    $("#content").html(html); 
+                })
+                .catch(error => {
+                    // Return error if API fails
+                    $("#content").text("Error loading data.");
+                    console.error("Error fetching data:", error);
+                });
+        }
+    </script>
+        
+    
+</head>
+<body>
+    <div class="heading">
+        <h1>Hurricane Readiness</h1>
+    </div>
+    <div class="search">
+        <!-- Dropdown menu for all states/territories -->
+        <form>
+            <label for="dropdown">Select a state:</label>
+            <select id="dropdown" style="width: 200px;">
+            <option value="" disabled selected>Select a state</option>
+            <option value="AL">Alabama</option>
+            <option value="AR">Arkansas</option>
+            <option value="CT">Connecticut</option>
+            <option value="DC">District of Columbia</option>
+            <option value="DE">Delaware</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="KY">Kentucky</option>
+            <option value="LA">Louisiana</option>
+            <option value="MD">Maryland</option>
+            <option value="MA">Massachusetts</option>
+            <option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option>
+            <option value="MT">Montana</option>
+            <option value="NC">North Carolina</option>
+            <option value="NH">New Hampshire</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option>
+            <option value="NY">New York</option>
+            <option value="OK">Oklahoma</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="PR">Puerto Rico</option>
+            <option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option>
+            <option value="TN">Tennessee</option>
+            <option value="TX">Texas</option>
+            <option value="VA">Virginia</option>
+            <option value="VT">Vermont</option>
+            <option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option>
+            <option value="WY">Wyoming</option>
+            </select>
+        </form>
+        <!-- Informs user content is loading, above handles changing this -->
+        <div id="content">Loading...</div>
+    </div>
+</body>
+</html>
