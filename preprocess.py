@@ -7,6 +7,13 @@ import io
 from datetime import timedelta, datetime
 import pandas as pd
 
+import matplotlib.pyplot as plt
+
+
+import warnings
+warnings.simplefilter("ignore", DeprecationWarning)
+
+
 def load_dams_data(original: pd.DataFrame):
     # read nation.csv
     df = pd.read_csv("raw_data/Dams/nation.csv")
@@ -39,7 +46,7 @@ def load_disasters_over_time(df: pd.DataFrame):
     
     # Convert all dates to date object
     new_df["disasterCloseoutDate"] = pd.to_datetime(new_df['disasterCloseoutDate'], format='%Y-%m-%dT%H:%M:%S.%fZ')
-    
+
     # Get date object of each time stamp
     twenty_years_ago = datetime.utcnow() - timedelta(days=20*365)
     ten_years_ago = datetime.utcnow() - timedelta(days=10*365)
@@ -57,19 +64,19 @@ def load_disasters_over_time(df: pd.DataFrame):
 
     # Rename columns for consistency with df
     disaster_counts = disaster_counts.rename(columns={"fipsStateCode": "STATEFIPS", "fipsCountyCode": "COUNTYFIPS"})
-
+    
     # Change typing of fips codes to be str
-    df["STATEFIPS"] = df["STATEFIPS"].astype(str)
-    df["COUNTYFIPS"] = df["COUNTYFIPS"].astype(str)
+    df["STATEFIPS"] = df["STATEFIPS"].astype(str).str.zfill(2)
+    df["COUNTYFIPS"] = df["COUNTYFIPS"].astype(str).str.zfill(3)
 
     # Merge DataFrames
-    merged_df = pd.merge(df, disaster_counts, on=["STATEFIPS", "COUNTYFIPS"], how="inner")
-
+    merged_df = pd.merge(df, disaster_counts, on=["STATEFIPS", "COUNTYFIPS"], how="left")
+    merged_df.fillna(0, inplace=True)
+    
     # Handle no hurricane areas
     count_zero_disasters_20 = (merged_df["DISASTER_PER_YEAR_20"] == 0).sum()
-    print(f"Rows with 0 disasters in the last 20 years: {count_zero_disasters_20}")
     merged_df = merged_df[merged_df["DISASTER_PER_YEAR_20"] != 0]
-
+    
     return merged_df
 
 def load_predicitve_data():
@@ -85,25 +92,57 @@ def load_predicitve_data():
         z.extractall('NRI_Data')  # Extracts to a directory named 'NRI_Data'
 
     # Read the CSV file from the URL
-    df = pd.read_csv('NRI_Data/NRI_Table_Counties.csv', usecols=['COUNTY', 'COUNTYFIPS', 'STATEFIPS', 'STATE', 'POPULATION', 'HRCN_EALB', 'HRCN_EALA', 'BUILDVALUE', 'AGRIVALUE'])
-    df['EAL'] = df['HRCN_EALB'] + df['HRCN_EALA'] # combines estimated lost in value in building and agriculture
+    df = pd.read_csv('NRI_Data/NRI_Table_Counties.csv', usecols=['COUNTY', 'COUNTYFIPS', 'STATEFIPS', 'STATE', 'STATEABBRV', 
+                                                                 'POPULATION', 
+                                                                 'HRCN_EALB', 'HRCN_EALA', 'HRCN_EALP',
+                                                                 'RFLD_EALB', 'RFLD_EALA', 'RFLD_EALP',
+                                                                 'BUILDVALUE', 'AGRIVALUE'])
+    df['EAL'] = df['HRCN_EALB'] 
     df = df.drop(['HRCN_EALB', 'HRCN_EALA'], axis=1)
 
     # df['EALN'] = df['EAL'] / df['POPULATION']
+    df['EAL'] = df['EAL'] / df['POPULATION']
 
     if os.path.exists(folder_path):
         shutil.rmtree(folder_path)
-
+ 
     df = load_disasters_over_time(df) 
-
+    
     df = load_dams_data(df)   
+    
+    # print("List of Inputs and Outputs")
+    # print("~~~~~~~~")
+    # for col in list(df.columns):
+    #     print(f"{col}: {df[col].dtype}")
 
-    print("List of Inputs and Outputs")
-    print("~~~~~~~~")
-    for col in list(df.columns):
-        print(f"{col}: {df[col].dtype}")
+    # Remove extraneous states that do not get hurricanes
+    fema_region_codes = {
+        1: ["ME","VT","NH","MA","CT","RI"],
+        2: ["NY", "NJ", "PR"],
+        3: ["PA", "MD", "DE", "DC", "VA", "WV"],
+        4: ["KY","NC","SC","GA","AL","MS","TN","FL"],
+        6: ["OK", "AR", "LA", "TX", "NM"]
+    }
+    states = []
+    for region in fema_region_codes.values():
+        for state in region:
+            states.append(state)
+    
+    df = df[df["STATEABBRV"].isin(states)]
 
+    # df = df[df['EAL'] < 4.274738e05]
+    
+    # # Create the box plot
+    # plt.figure(figsize=(8, 5))
+    # plt.boxplot(df['EAL'], patch_artist=True, notch=True)
 
+    # # Customizations
+    # plt.title("Box Plot Example")
+    # plt.xlabel("Groups")
+    # plt.ylabel("Values")
+    # plt.grid(True, linestyle="--", alpha=0.6)
+
+    # plt.savefig("test.png")
     return df
 
 if __name__ == "__main__":

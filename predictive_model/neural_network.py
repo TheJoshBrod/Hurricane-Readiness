@@ -3,6 +3,8 @@ import sys
 import torch
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
 
 class Neural_Network(torch.nn.Module):
     def __init__(self) -> None:
@@ -10,6 +12,10 @@ class Neural_Network(torch.nn.Module):
         super().__init__()
         self.sequence = torch.nn.Sequential(
                                         torch.nn.Linear(in_features=9, out_features=16, bias=True),
+                                        torch.nn.ReLU(),
+                                        torch.nn.Linear(in_features=16, out_features=16, bias=True),
+                                        torch.nn.ReLU(),
+                                        torch.nn.Linear(in_features=16, out_features=16, bias=True),
                                         torch.nn.ReLU(),
                                         torch.nn.Linear(in_features=16, out_features=16, bias=True),
                                         torch.nn.ReLU(),
@@ -41,7 +47,7 @@ def train_nn(model: Neural_Network, X_train, y_train, optimizer, criterion, epoc
         
         if epoch % 10 == 0:
             print(f"Epoch {epoch}/{epochs}, Loss: {loss.item()}")
-
+"AGRIVALUE", 
 if __name__ == "__main__":
     # Load Data
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -49,8 +55,12 @@ if __name__ == "__main__":
     df = load_predicitve_data()
     df = df.dropna()
     scaler = StandardScaler()
-    columns = ["POPULATION", "BUILDVALUE", "AGRIVALUE", 
-            "DISASTER_PER_YEAR_20", "DISASTER_PER_YEAR_10", "DISASTER_PER_YEAR_5", "DISASTER_PER_YEAR_1", "mean", "count"]
+    columns = ["POPULATION", "BUILDVALUE", 'HRCN_EALP',
+            #    'RFLD_EALB', 'RFLD_EALA', 'RFLD_EALP',
+            "DISASTER_PER_YEAR_20", "DISASTER_PER_YEAR_10", "DISASTER_PER_YEAR_5", "DISASTER_PER_YEAR_1",
+            "mean", "count"]
+    print("~~~~~\n\n\n")
+    print(df.head())
     df[columns] = scaler.fit_transform(df[columns])
 
     # Split data for X,y
@@ -71,3 +81,23 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(params=params, lr=learning_rate, weight_decay=0.01)
 
     train_nn(model, X_train, y_train, optimizer, criterion)
+    print("Finished training!")
+
+
+    # Calculate performance
+    with torch.no_grad():  
+        predictions = model(X_test)
+
+   
+    predictions = predictions.squeeze() 
+    predictions = predictions.cpu().numpy()
+    y_test = y_test.cpu().numpy()
+
+    mse = mean_squared_error(y_test, predictions)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, predictions)
+
+    print(f'Mean Squared Error: {mse:.4f}')
+    print(f'Root Mean Squared Error: {rmse:.4f}')
+    print(f'R² (Coefficient of Determination): {r2:.4f}')
+    torch.save(model, "predictive_model/model.pth")
