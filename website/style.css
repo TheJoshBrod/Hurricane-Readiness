@@ -2,6 +2,34 @@ body{
     background-color: antiquewhite;
 }
 
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.tab {   
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+}
+
+.tab:hover {
+    background-color: #bbb;
+}
+
+.tab-content {
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    display: none;
+}
+
+
+
 .heading{
     display: flex;
     align-items: center;
@@ -10,6 +38,38 @@ body{
 }
 
 .search{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.man_newstate{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#man_newstate-form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#man_newstate-form label{
+    margin-top: 10px;
+}
+
+.auto_newstate{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#auto_newstate-form{
     display: flex;
     align-items: center;
     justify-content: center;

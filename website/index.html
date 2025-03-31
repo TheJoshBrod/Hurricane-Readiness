@@ -14,6 +14,8 @@
         
         $("#content").empty()
         $('#dropdown').select2();
+        $(".man_newstate").hide();
+        $(".auto_newstate").hide();
 
         // Detect when dropdown state changes and fetch state data
         $('#dropdown').on('change', function() {
@@ -27,6 +29,26 @@
                 
             });
         });
+
+        function enable_state_search(){
+            $(".search").show();
+            $(".man_newstate").hide();
+            $(".auto_newstate").hide();
+        }
+
+        
+        function enable_man_state(){
+            $(".search").hide();
+            $(".man_newstate").show();
+            $(".auto_newstate").hide();
+        }
+
+        
+        function enable_auto_state(){
+            $(".search").hide();
+            $(".man_newstate").hide();
+            $(".auto_newstate").show();
+        }
 
         // Function to fetch filtered data based on the selected state
         function fetchFilteredData(state) {
@@ -43,6 +65,8 @@
                     console.error("Error fetching data:", error);
                 });
         }
+
+
     </script>
         
     
@@ -51,6 +75,12 @@
     <div class="heading">
         <h1>Hurricane Readiness</h1>
     </div>
+    <div class="nav-bar">
+        <div class="tab" id="search-state" onclick="enable_state_search()">Search Existing State</div>
+        <div class="tab" id="manual-new-state" onclick="enable_man_state()">Manually Predict a New State</div>
+        <div class="tab" id="automatic-new-state" onclick="enable_auto_state()">Manually Predict a New State</div>
+    </div>
+
     <div class="search">
         <!-- Dropdown menu for all states/territories -->
         <form>
@@ -93,5 +123,49 @@
         <!-- Informs user content is loading, above handles changing this -->
         <div id="content">Loading...</div>
     </div>
+    <div class="man_newstate">
+        <form id="man_newstate-form">
+            <!-- Textbox for each field -->
+            <label for="population">POPULATION</label>
+            <input type="text" id="population" name="population">
+    
+            <label for="buildvalue">Value of All Buildings</label>
+            <input type="text" id="buildvalue" name="buildvalue">
+    
+            <label for="hrcn_ealp">Estimated Hurricane Fatalities</label>
+            <input type="text" id="hrcn_ealp" name="hrcn_ealp">
+    
+            <label for="disaster_per_year_20">Quantity of Hurricanes span of 20 years</label>
+            <input type="text" id="disaster_per_year_20" name="disaster_per_year_20">
+    
+            <label for="disaster_per_year_10">Quantity of Hurricanes span of 10 years</label>
+            <input type="text" id="disaster_per_year_10" name="disaster_per_year_10">
+    
+            <label for="disaster_per_year_5">Quantity of Hurricanes span of 5 years</label>
+            <input type="text" id="disaster_per_year_5" name="disaster_per_year_5">
+    
+            <label for="disaster_per_year_1">Quantity of Hurricanes span of last year</label>
+            <input type="text" id="disaster_per_year_1" name="disaster_per_year_1">
+    
+            <label for="mean">Average Dam Saftey Index</label>
+            <input type="text" id="mean" name="mean">
+    
+            <label for="count">Number of Dams</label>
+            <input type="text" id="count" name="count">
+    
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <div class="auto_newstate">
+        <form id="auto_newstate-form">
+            <label for="chat-submission">Enter all information about your area</label>
+            <textarea id="expandable" name="message" rows="1" placeholder="Start typing..." required></textarea>
+    
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+
 </body>
 </html>
