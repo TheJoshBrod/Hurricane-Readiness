@@ -1,229 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hurricane Readiness</title>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="style.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    
-    <script>
-        $(document).ready(function() {
-        
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hurricane Readiness</title>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+  <!-- Include Chart.js for visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+
+        $('#dropdown').select2();
+
+        $(".man_newcounty, .auto_newcounty, .methodology, .man-prediction").hide();
+
+        $("#search-state").click(function() {
+            $(".search").show();
+            $(".man_newcounty, .auto_newcounty, .methodology, .man-prediction").hide();
+        });
+        $("#manual-new-county").click(function() {
+            $(".man_newcounty").show();
+            $(".search, .auto_newcounty, .methodology, .man-prediction").hide();
+        });
+        $("#automatic-new-county").click(function() {
+            $(".auto_newcounty").show();
+            $(".search, .man_newcounty, .methodology, .man-prediction").hide();
+        });
+        $("#nav-bar-methodology").click(function() {
+            $(".methodology").show();
+            $(".search, .man_newcounty, .auto_newcounty, .man-prediction").hide();
+        });
+
+        $('#dropdown').on('change', function() {
+            const selectedState = $(this).val();
+            if (!selectedState) {
+                $("#content").empty();
+                return;
+            }
+            $("#content").text("Loading...");
+            fetchFilteredData(selectedState);
+        });
+
         $("#man_newcounty-form").submit(function (event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
-            // Collect form data using jQuery
-            let formData = {
-                population: $("#population").val(),
-                buildvalue: $("#buildvalue").val(),
-                hrcn_ealp: $("#hrcn_ealp").val(),
-                disaster_per_year_20: $("#disaster_per_year_20").val(),
-                disaster_per_year_10: $("#disaster_per_year_10").val(),
-                disaster_per_year_5: $("#disaster_per_year_5").val(),
-                disaster_per_year_1: $("#disaster_per_year_1").val(),
-                mean: $("#mean").val(),
-                count: $("#count").val()
-            };
+            let population = $("#population").val();
+            let buildvalue = $("#buildvalue").val();
+            let hrcn_ealp = $("#hrcn_ealp").val();
+            let disaster_per_year_20 = $("#disaster_per_year_20").val();
+            let disaster_per_year_10 = $("#disaster_per_year_10").val();
+            let disaster_per_year_5 = $("#disaster_per_year_5").val();
+            let disaster_per_year_1 = $("#disaster_per_year_1").val();
+            let mean = $("#mean").val();
+            let count = $("#count").val();
 
-            fetch(`http://127.0.0.1:5000/man_predict?population=${$("#population").val()}&buildvalue=${$("#population").val()}&hrcn_ealp=${$("#population").val()}&disaster_per_year_20=${$("#population").val()}&disaster_per_year_10=${$("#population").val()}&disaster_per_year_5=${$("#population").val()}&disaster_per_year_1=${$("#population").val()}&mean=${$("#population").val()}&count=${$("#population").val()}`)
+            let url = `http:
+
+            $(".man-prediction-value").text("Calculating...");
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     let value = data.prediction;
-                    // Update html with predictions table
+
                     $(".man-prediction-value").text(`$${value} of building damage per person`);
-                    $('.man-prediction-summary').html(data.response)
+                    $(".man-prediction-summary").html(data.response);
                     $(".man-prediction").show();
                     $("#man_newcounty-form").hide();
+
+                    updateChart(value);
                 })
                 .catch(error => {
-                    // Return error if API fails
                     $("#content").text("Error loading data.");
                     console.error("Error fetching data:", error);
                 });
         });
 
-        $("#content").empty()
-        $('#dropdown').select2();
-        $(".man_newcounty").hide();
-        $(".auto_newcounty").hide();
-        $(".methodology").hide();
-
-        // Detect when dropdown state changes and fetch state data
-        $('#dropdown').on('change', function() {
-                const selectedState = $(this).val();
-                if (selectedState === ""){
-                    $("#content").empty()
-                    return;
-                }
-                $("#content").text("loading...")
-                fetchFilteredData(selectedState); 
-                
-            });
-        });
-
-        function enable_state_search(){
-            $(".search").show();
-            $(".man_newcounty").hide();
-            $(".auto_newcounty").hide();
-            $(".methodology").hide();
-        }
-
-        
-        function enable_man_county(){
-            $(".search").hide();
-            $(".man_newcounty").show();
-            $(".auto_newcounty").hide();
-            $(".man-prediction").hide();
-            $("#man_newcounty-form").show();
-            $(".methodology").hide();
-        }
-
-        
-        function enable_auto_county(){
-            $(".search").hide();
-            $(".man_newcounty").hide();
-            $(".auto_newcounty").show();
-            $(".methodology").hide();
-        }
-        
-        function enable_methodology(){
-            $(".search").hide();
-            $(".man_newcounty").hide();
-            $(".auto_newcounty").hide();
-            $(".methodology").show();
-        }
-
-        // Function to fetch filtered data based on the selected state
         function fetchFilteredData(state) {
-            // Make fetch for requested state 
-            fetch(`http://127.0.0.1:5000/?state=${state}`)
+            fetch(`http:
                 .then(response => response.text())
                 .then(html => {
-                    // Update html with predictions table
-                    $("#content").html(html); 
+                    $("#content").html(html);
                 })
                 .catch(error => {
-                    // Return error if API fails
                     $("#content").text("Error loading data.");
                     console.error("Error fetching data:", error);
                 });
         }
 
-    </script>
-        
-    
+        let chart;
+        function updateChart(predictionValue) {
+
+            const data = {
+                labels: ['Predicted Damage'],
+                datasets: [{
+                    label: 'Building Damage per Person',
+                    data: [predictionValue],
+                    backgroundColor: ['rgba(54, 162, 235, 0.5)'],
+                    borderColor: ['rgba(54, 162, 235, 1)'],
+                    borderWidth: 1
+                }]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Hurricane Damage Prediction'
+                        }
+                    }
+                }
+            };
+
+            if(chart) {
+                chart.destroy();
+            }
+
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            chart = new Chart(ctx, config);
+        }
+    });
+  </script>
 </head>
 <body>
-    <div class="heading">
-        <h1>Hurricane Readiness</h1>
-    </div>
-    <div class="nav-bar">
-        <div class="tab" id="search-state" onclick="enable_state_search()">Search Existing State</div>
-        <div class="tab" id="manual-new-county" onclick="enable_man_county()">Manually Predict a New county</div>
-        <div class="tab" id="automatic-new-county" onclick="enable_auto_county()">Talk to a Chatbot to Help Predict a New county</div>
-        <div class="tab" id="nav-bar-methodology" onclick="enable_methodology()">Methodology</div>
-    </div>
+  <header class="heading">
+      <h1>Hurricane Readiness</h1>
+  </header>
+  <nav class="nav-bar">
+      <div class="tab" id="search-state">Search Existing State</div>
+      <div class="tab" id="manual-new-county">Manually Predict a New County</div>
+      <div class="tab" id="automatic-new-county">Chatbot Assisted Prediction</div>
+      <div class="tab" id="nav-bar-methodology">Methodology</div>
+  </nav>
 
-    <div class="search">
-        <!-- Dropdown menu for all countys/territories -->
-        <form>
-            <label for="dropdown">Select a county:</label>
-            <select id="dropdown" style="width: 200px;">
-            <option value="" disabled selected>Select a county</option>
-            <option value="AL">Alabama</option>
-            <option value="AR">Arkansas</option>
-            <option value="CT">Connecticut</option>
-            <option value="DC">District of Columbia</option>
-            <option value="DE">Delaware</option>
-            <option value="FL">Florida</option>
-            <option value="GA">Georgia</option>
-            <option value="KY">Kentucky</option>
-            <option value="LA">Louisiana</option>
-            <option value="MD">Maryland</option>
-            <option value="MA">Massachusetts</option>
-            <option value="MS">Mississippi</option>
-            <option value="MO">Missouri</option>
-            <option value="MT">Montana</option>
-            <option value="NC">North Carolina</option>
-            <option value="NH">New Hampshire</option>
-            <option value="NJ">New Jersey</option>
-            <option value="NM">New Mexico</option>
-            <option value="NY">New York</option>
-            <option value="OK">Oklahoma</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="PR">Puerto Rico</option>
-            <option value="RI">Rhode Island</option>
-            <option value="SC">South Carolina</option>
-            <option value="TN">Tennessee</option>
-            <option value="TX">Texas</option>
-            <option value="VA">Virginia</option>
-            <option value="VT">Vermont</option>
-            <option value="WV">West Virginia</option>
-            <option value="WI">Wisconsin</option>
-            <option value="WY">Wyoming</option>
-            </select>
-        </form>
-        <!-- Informs user content is loading, above handles changing this -->
-        <div id="content">Loading...</div>
-    </div>
-    <div class="man_newcounty">
-        <form id="man_newcounty-form">
-            <!-- Textbox for each field -->
-            <label for="population">Population</label>
-            <input type="text" id="population" name="population">
-    
-            <label for="buildvalue">Value of All Buildings</label>
-            <input type="text" id="buildvalue" name="buildvalue">
-    
-            <label for="hrcn_ealp">Estimated Hurricane Fatalities</label>
-            <input type="text" id="hrcn_ealp" name="hrcn_ealp">
-    
-            <label for="disaster_per_year_20">Quantity of Hurricanes span of 20 years</label>
-            <input type="text" id="disaster_per_year_20" name="disaster_per_year_20">
-    
-            <label for="disaster_per_year_10">Quantity of Hurricanes span of 10 years</label>
-            <input type="text" id="disaster_per_year_10" name="disaster_per_year_10">
-    
-            <label for="disaster_per_year_5">Quantity of Hurricanes span of 5 years</label>
-            <input type="text" id="disaster_per_year_5" name="disaster_per_year_5">
-    
-            <label for="disaster_per_year_1">Quantity of Hurricanes span of last year</label>
-            <input type="text" id="disaster_per_year_1" name="disaster_per_year_1">
-    
-            <label for="mean">Average Dam Saftey Index</label>
-            <input type="text" id="mean" name="mean">
-    
-            <label for="count">Number of Dams</label>
-            <input type="text" id="count" name="count">
-    
-            <button type="submit">Submit</button>
-        </form>
-        <div class="man-prediction">
-            <h1>Prediction:</h1>
-            <p class="man-prediction-value"></p>
-            <h2>Summary reasoning:</h2>
-            <p class="man-prediction-summary"></p>
-        </div>
-    </div>
-    
-    <div class="auto_newcounty">
-        <form id="auto_newcounty-form">
-            <label for="chat-submission">Enter all information about your area</label>
-            <textarea id="expandable" name="message" rows="1" placeholder="Start typing..." required></textarea>
-    
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-    
-    <div class="methodology">
-        <h2>Methodology</h2>
-        <p>our methods...</p>
-        <img class="methodology-image" src="../assets/fema_regions_map.png"/>
-    </div>
-    
+  <main>
+    <!-- Search Section -->
+    <section class="search">
+      <form>
+          <label for="dropdown">Select a County:</label>
+          <select id="dropdown" style="width: 200px;">
+              <option value="" disabled selected>Select a county</option>
+              <option value="AL">Alabama</option>
+              <option value="AR">Arkansas</option>
+              <option value="CT">Connecticut</option>
+              <option value="DC">District of Columbia</option>
+              <option value="DE">Delaware</option>
+              <option value="FL">Florida</option>
+              <option value="GA">Georgia</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NC">North Carolina</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="OK">Oklahoma</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="PR">Puerto Rico</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="TN">Tennessee</option>
+              <option value="TX">Texas</option>
+              <option value="VA">Virginia</option>
+              <option value="VT">Vermont</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming</option>
+          </select>
+      </form>
+      <div id="content">Loading...</div>
+    </section>
 
+    <!-- Manual Prediction Section -->
+    <section class="man_newcounty">
+      <form id="man_newcounty-form">
+          <label for="population">Population</label>
+          <input type="text" id="population" name="population">
+
+          <label for="buildvalue">Value of All Buildings</label>
+          <input type="text" id="buildvalue" name="buildvalue">
+
+          <label for="hrcn_ealp">Estimated Hurricane Fatalities</label>
+          <input type="text" id="hrcn_ealp" name="hrcn_ealp">
+
+          <label for="disaster_per_year_20">Quantity of Hurricanes (20-year span)</label>
+          <input type="text" id="disaster_per_year_20" name="disaster_per_year_20">
+
+          <label for="disaster_per_year_10">Quantity of Hurricanes (10-year span)</label>
+          <input type="text" id="disaster_per_year_10" name="disaster_per_year_10">
+
+          <label for="disaster_per_year_5">Quantity of Hurricanes (5-year span)</label>
+          <input type="text" id="disaster_per_year_5" name="disaster_per_year_5">
+
+          <label for="disaster_per_year_1">Quantity of Hurricanes (Last Year)</label>
+          <input type="text" id="disaster_per_year_1" name="disaster_per_year_1">
+
+          <label for="mean">Average Dam Safety Index</label>
+          <input type="text" id="mean" name="mean">
+
+          <label for="count">Number of Dams</label>
+          <input type="text" id="count" name="count">
+
+          <button type="submit">Submit</button>
+      </form>
+      <div class="man-prediction">
+          <h2>Prediction:</h2>
+          <p class="man-prediction-value"></p>
+          <h3>Summary:</h3>
+          <p class="man-prediction-summary"></p>
+          <canvas id="predictionChart" width="400" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- Chatbot Assisted Prediction Section -->
+    <section class="auto_newcounty">
+      <form id="auto_newcounty-form">
+          <label for="chat-submission">Enter all information about your area:</label>
+          <textarea id="expandable" name="message" rows="3" placeholder="Start typing..." required></textarea>
+          <button type="submit">Submit</button>
+      </form>
+    </section>
+
+    <!-- Methodology Section -->
+    <section class="methodology">
+      <h2>Methodology</h2>
+      <p>Our methods include historical data analysis, risk modeling, and real-time updates to estimate potential hurricane damage. Our approach is continuously refined using the latest meteorological data and building assessments.</p>
+      <img class="methodology-image" src="../assets/fema_regions_map.png" alt="FEMA Regions Map">
+    </section>
+  </main>
 </body>
 </html>
