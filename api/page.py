@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+import json
 
 import torch
 import pandas as pd
@@ -8,6 +9,8 @@ import ollama
 
 import sys
 import os
+
+from urllib.parse import unquote
 
 from sklearn.preprocessing import StandardScaler
 
@@ -20,6 +23,87 @@ model = ""
 
 app = Flask(__name__)
 CORS(app)
+
+
+def generate_json_params(query: str):
+    try: 
+        prompt = "You are a weather and climate analyst whose job is to analyze hurricane risk over time\n"
+        prompt += "A local member of your community asks for an assessment of the risk of the community.\n"
+        prompt += "They come to you with the following info:\n"
+        prompt += query + "\n"
+        prompt += "You have a Neural net that takes in certain inputs to estimate the building damage/year occur due to hurricanes\n"
+        prompt += "It requires the following information\n"
+        prompt += """
+                    population: population of this county.
+                    buildvalue: estimated vallue of all building properties in this county.
+                    hrcn_ealp: estimated loss of life per year due to hurricanes in this county.
+                    disaster_per_year_20: estimated number of hurricanes that have hit this county in the last 20 years.
+                    disaster_per_year_10: estimated number of hurricanes that have hit this county in the last 10 years.
+                    disaster_per_year_5: estimated number of hurricanes that have hit this county in the last 5 years.
+                    disaster_per_year_1: estimated number of hurricanes that have hit this county in the last year.
+                    mean: Average Dam saftey index score
+                    count: number of dams in the county
+                """
+        prompt += """
+                    Please only respond in the following json format:
+                    {
+                    "population":<value>
+                    ...
+                    }
+                    """
+        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+    except Exception as e:
+        print(e)
+        response = generate_json_params(query)
+    return json.loads(response)
+
+@app.route("/auto_predict")
+def auto_predict():
+    global model
+    print("Begining auto predict")
+    user_response = unquote(request.args.get("query"))
+    params = generate_json_params(user_response)
+    
+    print("Generated estimates")
+    print(params)
+
+    X = torch.tensor([float(params["population"]),
+                      float(params["buildvalue"]),
+                      float(params["hrcn_ealp"]),
+                      float(params["disaster_per_year_20"]),
+                      float(params["disaster_per_year_10"]),
+                      float(params["disaster_per_year_5"]),
+                      float(params["disaster_per_year_1"]),
+                      float(params["mean"]),
+                      float(params["count"])])
+    with torch.no_grad():  
+        prediction = model(X)
+    print(f"Predicted value is {prediction.item()}")
+
+    
+    print("Generating summary report")
+    prompt = ""
+    prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
+    prompt += "You predict the property damage per person per year per county.\n"
+    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
+    prompt += f"Your came to this conclusion through a local citizen coming to you with a description of your county.\n"
+    prompt += f"You had to estimate each of the following piece of information below\n"
+    prompt += f"Estimated population is {params["population"]}, Estimated value of all buildings in the county is {params["buildvalue"]}, "
+    prompt += f"Estimated Loss of live per year is {params["hrcn_ealp"]}, Estimated average number of hurricanes per year for the last 20 years {params["disaster_per_year_20"]}, "
+    prompt += f"Estimated average number of hurricanes per year for the last 10 years {params["disaster_per_year_10"]}, Estimated average number of hurricanes per year for the last 5 years {params["disaster_per_year_5"]}, "
+    prompt += f"Estimated average number of hurricanes per year for the last year {params["disaster_per_year_1"]}, the Estimated average safety index of {params["mean"]}, and Estimated number of dams in this county are {params["count"]}.\n\n"
+    prompt += f"Give a summary report of why you gave this ranking and why u estimated each value.\n"
+    prompt += f"Respond only in the html format below.\n"
+
+    prompt += """<div class="summary"><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>
+
+<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n
+
+These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"""
+    response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+    print(response['message']['content'])
+    return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
+
 
 @app.route("/man_predict")
 def man_predict():
@@ -59,7 +143,7 @@ def man_predict():
 
 These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"""
     response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
-    print(response)
+    print(response['message']['content'])
     return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
 
 @app.route("/")
@@ -69,7 +153,7 @@ def homepage():
     state = request.args.get("state")
 
     filtered_data = data[data["STATEABBRV"] == state][["STATE","COUNTY","Predicted EAL/Population", "Actual EAL"]]
-    
+    filtered_data = filtered_data.rename(columns={'Predicted EAL/Population': 'Predicted EAL'})
     return filtered_data.to_html(index=False)
 
 

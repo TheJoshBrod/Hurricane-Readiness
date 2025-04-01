@@ -5,6 +5,13 @@ body {
     padding: 0;
   }
 
+.search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
   header.heading {
     text-align: center;
     padding: 20px;
@@ -70,10 +77,23 @@ body {
     background-color: #34495e;
   }
 
+#content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
   .man-prediction {
     margin-top: 20px;
     text-align: center;
   }
+
+  .auto-prediction{
+    margin-top: 20px;
+    text-align: center;
+  
+  }
+
   canvas#predictionChart {
     margin-top: 20px;
     max-width: 100%;
@@ -98,3 +118,37 @@ body {
     max-width: 600px;
     text-align: center;
   }
+
+table{
+    border: #2e3f51 1px solid;
+}
+
+th{
+    border: 0px;
+    text-align: center;
+    background-color: #545b64;
+    color: white;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+tr {
+    outline: 1px solid #374a5f;
+}
+
+td{
+    border: 0px;
+    padding-right: 10px;
+    padding-left: 10px;
+    text-align: left;
+}
+
+
+td:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+
+td:nth-child(even){
+    background-color: #d1e7fd;
+}
+

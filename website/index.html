@@ -11,23 +11,30 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
   <script>
+
     $(document).ready(function() {
 
         $('#dropdown').select2();
 
-        $(".man_newcounty, .auto_newcounty, .methodology, .man-prediction").hide();
+        $(".man_newcounty").hide();
+        $(".auto_newcounty").hide();
+        $(".methodology").hide()
+        $(".man-prediction").hide();
+        $(".auto-prediction").hide();
 
         $("#search-state").click(function() {
             $(".search").show();
             $(".man_newcounty, .auto_newcounty, .methodology, .man-prediction").hide();
         });
         $("#manual-new-county").click(function() {
+            $("#man_newcounty-form").show();
             $(".man_newcounty").show();
             $(".search, .auto_newcounty, .methodology, .man-prediction").hide();
         });
         $("#automatic-new-county").click(function() {
             $(".auto_newcounty").show();
-            $(".search, .man_newcounty, .methodology, .man-prediction").hide();
+            // $(".man_newcounty").show();
+            $(".search, .man_newcounty, .methodology, .man-prediction, .auto-prediction").hide();
         });
         $("#nav-bar-methodology").click(function() {
             $(".methodology").show();
@@ -47,20 +54,22 @@
         $("#man_newcounty-form").submit(function (event) {
             event.preventDefault();
 
-            let population = $("#population").val();
-            let buildvalue = $("#buildvalue").val();
-            let hrcn_ealp = $("#hrcn_ealp").val();
-            let disaster_per_year_20 = $("#disaster_per_year_20").val();
-            let disaster_per_year_10 = $("#disaster_per_year_10").val();
-            let disaster_per_year_5 = $("#disaster_per_year_5").val();
-            let disaster_per_year_1 = $("#disaster_per_year_1").val();
-            let mean = $("#mean").val();
-            let count = $("#count").val();
+            let url = "http://127.0.0.1:5000/man_predict?";
+            url += `population=${encodeURIComponent($("#population").val())}&`;
+            url += `buildvalue=${encodeURIComponent($("#buildvalue").val())}&`;
+            url += `hrcn_ealp=${encodeURIComponent($("#hrcn_ealp").val())}&`;
+            url += `disaster_per_year_20=${encodeURIComponent($("#disaster_per_year_20").val())}&`;
+            url += `disaster_per_year_10=${encodeURIComponent($("#disaster_per_year_10").val())}&`;
+            url += `disaster_per_year_5=${encodeURIComponent($("#disaster_per_year_5").val())}&`;
+            url += `disaster_per_year_1=${encodeURIComponent($("#disaster_per_year_1").val())}&`;
+            url += `mean=${encodeURIComponent($("#mean").val())}&`;
+            url += `count=${encodeURIComponent($("#count").val())}`;
 
-            let url = `http:
+            console.log(url);
 
+            $(".man-prediction").show();
+            $("#man_newcounty-form").hide();
             $(".man-prediction-value").text("Calculating...");
-
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -71,7 +80,7 @@
                     $(".man-prediction").show();
                     $("#man_newcounty-form").hide();
 
-                    updateChart(value);
+                    // updateChart(value);
                 })
                 .catch(error => {
                     $("#content").text("Error loading data.");
@@ -79,8 +88,36 @@
                 });
         });
 
+        $("#auto_newcounty-form").submit(function (event){
+            event.preventDefault();
+            let query_safe = encodeURIComponent($("#expandable").val());
+            let url = `http://127.0.0.1:5000/auto_predict?query=${query_safe}`
+            $(".man-prediction").show();
+            $("#man_newcounty-form").hide();
+            $(".man-prediction-value").text("Calculating...");
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let value = data.prediction;
+
+                    $(".auto-prediction-value").text(`$${value} of building damage per person`);
+                    $(".auto-prediction-summary").html(data.response);
+                    $(".auto-prediction").show();
+                    $("#auto_newcounty-form").hide();
+
+                    // updateChart(value);
+                })
+                .catch(error => {
+                    $(".auto-prediction").text("Error loading data.");
+                    console.error("Error fetching data:", error);
+                });
+        })
+
         function fetchFilteredData(state) {
-            fetch(`http:
+            if (state === ""){
+                return;
+            }
+            fetch(`http://127.0.0.1:5000?state=${state}`)
                 .then(response => response.text())
                 .then(html => {
                     $("#content").html(html);
@@ -91,7 +128,7 @@
                 });
         }
 
-        let chart;
+        // let chart;
         function updateChart(predictionValue) {
 
             const data = {
@@ -156,9 +193,9 @@
     <!-- Search Section -->
     <section class="search">
       <form>
-          <label for="dropdown">Select a County:</label>
+          <label for="dropdown">Select a State:</label>
           <select id="dropdown" style="width: 200px;">
-              <option value="" disabled selected>Select a county</option>
+              <option value="" disabled selected>Select a state</option>
               <option value="AL">Alabama</option>
               <option value="AR">Arkansas</option>
               <option value="CT">Connecticut</option>
@@ -192,7 +229,7 @@
               <option value="WY">Wyoming</option>
           </select>
       </form>
-      <div id="content">Loading...</div>
+      <div id="content">Please Select a State Above</div>
     </section>
 
     <!-- Manual Prediction Section -->
@@ -243,6 +280,13 @@
           <textarea id="expandable" name="message" rows="3" placeholder="Start typing..." required></textarea>
           <button type="submit">Submit</button>
       </form>
+      <div class="auto-prediction">
+        <h2>Prediction:</h2>
+        <p class="auto-prediction-value"></p>
+        <h3>Summary:</h3>
+        <p class="auto-prediction-summary"></p>
+        <canvas id="predictionChart" width="400" height="200"></canvas>
+    </div>
     </section>
 
     <!-- Methodology Section -->
