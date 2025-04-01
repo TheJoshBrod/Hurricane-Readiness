@@ -49,6 +49,7 @@
         $('#dropdown').select2();
         $(".man_newcounty").hide();
         $(".auto_newcounty").hide();
+        $(".methodology").hide();
 
         // Detect when dropdown state changes and fetch state data
         $('#dropdown').on('change', function() {
@@ -67,6 +68,7 @@
             $(".search").show();
             $(".man_newcounty").hide();
             $(".auto_newcounty").hide();
+            $(".methodology").hide();
         }
 
         
@@ -76,6 +78,7 @@
             $(".auto_newcounty").hide();
             $(".man-prediction").hide();
             $("#man_newcounty-form").show();
+            $(".methodology").hide();
         }
 
         
@@ -83,6 +86,14 @@
             $(".search").hide();
             $(".man_newcounty").hide();
             $(".auto_newcounty").show();
+            $(".methodology").hide();
+        }
+        
+        function enable_methodology(){
+            $(".search").hide();
+            $(".man_newcounty").hide();
+            $(".auto_newcounty").hide();
+            $(".methodology").show();
         }
 
         // Function to fetch filtered data based on the selected state
@@ -113,6 +124,7 @@
         <div class="tab" id="search-state" onclick="enable_state_search()">Search Existing State</div>
         <div class="tab" id="manual-new-county" onclick="enable_man_county()">Manually Predict a New county</div>
         <div class="tab" id="automatic-new-county" onclick="enable_auto_county()">Talk to a Chatbot to Help Predict a New county</div>
+        <div class="tab" id="nav-bar-methodology" onclick="enable_methodology()">Methodology</div>
     </div>
 
     <div class="search">
@@ -204,6 +216,12 @@
     
             <button type="submit">Submit</button>
         </form>
+    </div>
+    
+    <div class="methodology">
+        <h2>Methodology</h2>
+        <p>our methods...</p>
+        <img class="methodology-image" src="../assets/fema_regions_map.png"/>
     </div>
     
 
