@@ -1,9 +1,10 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 
 import torch
 import pandas as pd
+import ollama
 
 import sys
 import os
@@ -15,10 +16,51 @@ from neural_network import Neural_Network
 
 predictions = []
 data = []
+model = ""
 
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/man_predict")
+def man_predict():
+    global model
+    population = float(request.args.get("population"))
+    buildvalue = float(request.args.get("buildvalue"))
+    hrcn_ealp = float(request.args.get("hrcn_ealp"))
+    disaster_per_year_20 = float(request.args.get("disaster_per_year_20"))
+    disaster_per_year_10 = float(request.args.get("disaster_per_year_10"))
+    disaster_per_year_5 = float(request.args.get("disaster_per_year_5"))
+    disaster_per_year_1 = float(request.args.get("disaster_per_year_1"))
+    mean = float(request.args.get("mean"))
+    count = float(request.args.get("count"))
+
+    X = torch.tensor([population, buildvalue, hrcn_ealp,
+                      disaster_per_year_20, disaster_per_year_10,
+                      disaster_per_year_5, disaster_per_year_1,
+                      mean, count])
+    with torch.no_grad():  
+        prediction = model(X)
+    
+
+    prompt = ""
+    prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
+    prompt += "You predict the property damage per person per year per county.\n"
+    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
+    prompt += f"Your came to this conclusion through population is {population}, the value of all buildings in the county is {buildvalue}, "
+    prompt += f"Estimated Loss of live per year is {hrcn_ealp}, average number of hurricanes per year for the last 20 years {disaster_per_year_20}, "
+    prompt += f"average number of hurricanes per year for the last 10 years {disaster_per_year_10}, average number of hurricanes per year for the last 5 years {disaster_per_year_5}, "
+    prompt += f"average number of hurricanes per year for the last year {disaster_per_year_1}, the average safety index of {mean}, and number of dams in this county are {count}.\n\n"
+    prompt += f"Give a summary report of why you gave this ranking.\n"
+    prompt += f"Respond only in the html format below.\n"
+
+    prompt += """<div class="summary"><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>
+
+<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n
+
+These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"""
+    response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+    print(response)
+    return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
 
 @app.route("/")
 def homepage():
@@ -61,5 +103,5 @@ if __name__ == "__main__":
         print(f"Error: Length mismatch - data has {len(data)} rows, predictions has {len(predictions)} rows")
     data = data.sort_values(by='Predicted EAL/Population', ascending=False, inplace=False)
     data["Actual EAL"] = df["EAL"]
-    # print(data.head())
+    
     app.run(debug=True)

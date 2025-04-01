@@ -12,10 +12,43 @@
     <script>
         $(document).ready(function() {
         
+        $("#man_newcounty-form").submit(function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data using jQuery
+            let formData = {
+                population: $("#population").val(),
+                buildvalue: $("#buildvalue").val(),
+                hrcn_ealp: $("#hrcn_ealp").val(),
+                disaster_per_year_20: $("#disaster_per_year_20").val(),
+                disaster_per_year_10: $("#disaster_per_year_10").val(),
+                disaster_per_year_5: $("#disaster_per_year_5").val(),
+                disaster_per_year_1: $("#disaster_per_year_1").val(),
+                mean: $("#mean").val(),
+                count: $("#count").val()
+            };
+
+            fetch(`http://127.0.0.1:5000/man_predict?population=${$("#population").val()}&buildvalue=${$("#population").val()}&hrcn_ealp=${$("#population").val()}&disaster_per_year_20=${$("#population").val()}&disaster_per_year_10=${$("#population").val()}&disaster_per_year_5=${$("#population").val()}&disaster_per_year_1=${$("#population").val()}&mean=${$("#population").val()}&count=${$("#population").val()}`)
+                .then(response => response.json())
+                .then(data => {
+                    let value = data.prediction;
+                    // Update html with predictions table
+                    $(".man-prediction-value").text(`$${value} of building damage per person`);
+                    $('.man-prediction-summary').html(data.response)
+                    $(".man-prediction").show();
+                    $("#man_newcounty-form").hide();
+                })
+                .catch(error => {
+                    // Return error if API fails
+                    $("#content").text("Error loading data.");
+                    console.error("Error fetching data:", error);
+                });
+        });
+
         $("#content").empty()
         $('#dropdown').select2();
-        $(".man_newstate").hide();
-        $(".auto_newstate").hide();
+        $(".man_newcounty").hide();
+        $(".auto_newcounty").hide();
 
         // Detect when dropdown state changes and fetch state data
         $('#dropdown').on('change', function() {
@@ -37,17 +70,19 @@
         }
 
         
-        function enable_man_state(){
+        function enable_man_county(){
             $(".search").hide();
-            $(".man_newstate").show();
-            $(".auto_newstate").hide();
+            $(".man_newcounty").show();
+            $(".auto_newcounty").hide();
+            $(".man-prediction").hide();
+            $("#man_newcounty-form").show();
         }
 
         
-        function enable_auto_state(){
+        function enable_auto_county(){
             $(".search").hide();
-            $(".man_newstate").hide();
-            $(".auto_newstate").show();
+            $(".man_newcounty").hide();
+            $(".auto_newcounty").show();
         }
 
         // Function to fetch filtered data based on the selected state
@@ -66,7 +101,6 @@
                 });
         }
 
-
     </script>
         
     
@@ -77,16 +111,16 @@
     </div>
     <div class="nav-bar">
         <div class="tab" id="search-state" onclick="enable_state_search()">Search Existing State</div>
-        <div class="tab" id="manual-new-state" onclick="enable_man_state()">Manually Predict a New State</div>
-        <div class="tab" id="automatic-new-state" onclick="enable_auto_state()">Talk to a Chatbot to Help Predict a New State</div>
+        <div class="tab" id="manual-new-county" onclick="enable_man_county()">Manually Predict a New county</div>
+        <div class="tab" id="automatic-new-county" onclick="enable_auto_county()">Talk to a Chatbot to Help Predict a New county</div>
     </div>
 
     <div class="search">
-        <!-- Dropdown menu for all states/territories -->
+        <!-- Dropdown menu for all countys/territories -->
         <form>
-            <label for="dropdown">Select a state:</label>
+            <label for="dropdown">Select a county:</label>
             <select id="dropdown" style="width: 200px;">
-            <option value="" disabled selected>Select a state</option>
+            <option value="" disabled selected>Select a county</option>
             <option value="AL">Alabama</option>
             <option value="AR">Arkansas</option>
             <option value="CT">Connecticut</option>
@@ -123,10 +157,10 @@
         <!-- Informs user content is loading, above handles changing this -->
         <div id="content">Loading...</div>
     </div>
-    <div class="man_newstate">
-        <form id="man_newstate-form">
+    <div class="man_newcounty">
+        <form id="man_newcounty-form">
             <!-- Textbox for each field -->
-            <label for="population">POPULATION</label>
+            <label for="population">Population</label>
             <input type="text" id="population" name="population">
     
             <label for="buildvalue">Value of All Buildings</label>
@@ -155,10 +189,16 @@
     
             <button type="submit">Submit</button>
         </form>
+        <div class="man-prediction">
+            <h1>Prediction:</h1>
+            <p class="man-prediction-value"></p>
+            <h2>Summary reasoning:</h2>
+            <p class="man-prediction-summary"></p>
+        </div>
     </div>
     
-    <div class="auto_newstate">
-        <form id="auto_newstate-form">
+    <div class="auto_newcounty">
+        <form id="auto_newcounty-form">
             <label for="chat-submission">Enter all information about your area</label>
             <textarea id="expandable" name="message" rows="1" placeholder="Start typing..." required></textarea>
     

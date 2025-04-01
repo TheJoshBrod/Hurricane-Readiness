@@ -28,8 +28,6 @@ body{
     display: none;
 }
 
-
-
 .heading{
     display: flex;
     align-items: center;
@@ -44,44 +42,49 @@ body{
     flex-direction: column;
 }
 
-.man_newstate{
+.man_newcounty{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
 
-#man_newstate-form{
+#man_newcounty-form{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
 
-#man_newstate-form label{
+#man_newscounty-form label{
     margin-top: 10px;
 }
 
-.auto_newstate{
+div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.auto_newcounty{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
 
-#auto_newstate-form{
+#auto_newcounty-form{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
-
 
 table {
     width: 100%;
     border-collapse: collapse;
 }
-
 
 th {
     text-align: center;
@@ -98,3 +101,10 @@ th, td {
     border: 1px solid #ddd;
 }
 
+
+.summary{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
