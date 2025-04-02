@@ -59,6 +59,11 @@ def generate_json_params(query: str):
                             - disaster_per_year_5: The average number of hurricanes per year over the last 5 years (total hurricanes in 5 years / 5).  
                             - disaster_per_year_1: The number of hurricanes that occurred in the last year.  
                             - mean: The average dam safety index score in the county.  
+                                mean_hazard_score = {{
+                                    "Low": 3,
+                                    "Significant": 5,
+                                    "High": 10
+                                }}
                             - count: The number of dams in the county.  
 
                             Response format:  
@@ -150,13 +155,13 @@ def auto_predict():
     print("Generating summary report")
     prompt = auto_create_summary_prompt(prediction, params)
     if llm == "llama":
-        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
     else:
         response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
         response = clean_deepseek_response(response)
     print(response)
     
-    return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
+    return jsonify({'prediction': prediction.item(), 'response': response})
 
 def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
     disaster_per_year_20, disaster_per_year_10, disaster_per_year_5, disaster_per_year_1,
@@ -180,6 +185,7 @@ def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
 @app.route("/man_predict")
 def man_predict():
     global model
+    print("Creating prediction from manual entry")
 
     # Get all params out of api call
     population = float(request.args.get
@@ -207,12 +213,12 @@ def man_predict():
     mean, count)
  
     if llm == "llama":
-        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
     else:
         response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
         response = clean_deepseek_response(response)
     
-    return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
+    return jsonify({'prediction': prediction.item(), 'response': response})
 
 @app.route("/")
 def homepage():
