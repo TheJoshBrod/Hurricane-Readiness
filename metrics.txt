@@ -1,0 +1,20 @@
+Kendall tau distance: 0.4604299135332556
+
+Top 5 predicted counties
+	Precision: 1.0
+	Recall: 0.17857142857142858
+Top 10 predicted counties
+	Precision: 1.0
+	Recall: 0.35714285714285715
+Top 25 predicted counties
+	Precision: 0.76
+	Recall: 0.6785714285714286
+Top 50 predicted counties
+	Precision: 0.56
+	Recall: 1.0
+Top 100 predicted counties
+	Precision: 0.28
+	Recall: 1.0
+Top 200 predicted counties
+	Precision: 0.14
+	Recall: 1.0

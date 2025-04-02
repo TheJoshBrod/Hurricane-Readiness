@@ -16,7 +16,7 @@ warnings.simplefilter("ignore", DeprecationWarning)
 
 def load_dams_data(original: pd.DataFrame):
     # read nation.csv
-    df = pd.read_csv("raw_data/Dams/nation.csv")
+    df = pd.read_csv("raw_data/Dams/nation.csv", skiprows=1)
 
     # get hazard score for each dam
     hazard_score = {
@@ -87,7 +87,7 @@ def load_predicitve_data():
 
     url = 'https://hazards.fema.gov/nri/Content/StaticDocuments/DataDownload//NRI_Table_Counties/NRI_Table_Counties.zip'
     response = requests.get(url)
-
+    
     with zipfile.ZipFile(io.BytesIO(response.content)) as z:
         z.extractall('NRI_Data')  # Extracts to a directory named 'NRI_Data'
 
