@@ -73,6 +73,7 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     let value = data.prediction;
 
                     $(".man-prediction-value").text(`$${value} of building damage per person`);

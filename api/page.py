@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import json
+import re
 
 import torch
 import pandas as pd
@@ -20,42 +21,107 @@ from neural_network import Neural_Network
 predictions = []
 data = []
 model = ""
+llm = "llama"
 
 app = Flask(__name__)
 CORS(app)
 
+def clean_deepseek_response(response):
+    if "think>" in response:
+        remove_think_tag = response.split("think>")[-1]
+        remove_think_tag = f"{{{remove_think_tag}}}"
+        response = remove_think_tag
+    print(response)
+    return response
 
 def generate_json_params(query: str):
+    global deepseek_client
     try: 
-        prompt = "You are a weather and climate analyst whose job is to analyze hurricane risk over time\n"
-        prompt += "A local member of your community asks for an assessment of the risk of the community.\n"
-        prompt += "They come to you with the following info:\n"
-        prompt += query + "\n"
-        prompt += "You have a Neural net that takes in certain inputs to estimate the building damage/year occur due to hurricanes\n"
-        prompt += "It requires the following information\n"
-        prompt += """
-                    population: population of this county.
-                    buildvalue: estimated vallue of all building properties in this county.
-                    hrcn_ealp: estimated loss of life per year due to hurricanes in this county.
-                    disaster_per_year_20: estimated number of hurricanes that have hit this county in the last 20 years.
-                    disaster_per_year_10: estimated number of hurricanes that have hit this county in the last 10 years.
-                    disaster_per_year_5: estimated number of hurricanes that have hit this county in the last 5 years.
-                    disaster_per_year_1: estimated number of hurricanes that have hit this county in the last year.
-                    mean: Average Dam saftey index score
-                    count: number of dams in the county
-                """
-        prompt += """
-                    Please only respond in the following json format:
-                    {
-                    "population":<value>
-                    ...
-                    }
-                    """
-        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+        prompt = prompt = f"""You are a weather and climate analyst specializing in hurricane risk assessment.  
+                            A local community member has approached you for an evaluation of the hurricane risk in their county.  
+                            They have provided the following details:  
+
+                            User-provided information:  
+                            {query}  
+
+                            To estimate the annual building damage due to hurricanes, you have access to a neural network model.  
+                            This model requires the following inputs:  
+
+                            - population: The total population of the county.  
+                            - buildvalue: The estimated total value of all buildings in the county.  
+                            - If exact data is unavailable, estimate this based on:  
+                                - Average property values (residential, commercial, industrial).  
+                                - Number of buildings in the county.  
+                                - FEMA’s past estimates for similar-sized metropolitan areas.  
+                            - hrcn_ealp: The estimated loss of life per year due to hurricanes in this county.  
+                            - disaster_per_year_20: The average number of hurricanes per year over the last 20 years (total hurricanes in 20 years / 20).  
+                            - disaster_per_year_10: The average number of hurricanes per year over the last 10 years (total hurricanes in 10 years / 10).  
+                            - disaster_per_year_5: The average number of hurricanes per year over the last 5 years (total hurricanes in 5 years / 5).  
+                            - disaster_per_year_1: The number of hurricanes that occurred in the last year.  
+                            - mean: The average dam safety index score in the county.  
+                            - count: The number of dams in the county.  
+
+                            Response format:  
+                            - Output your response as a single JSON object.  
+                            - If exact values are unavailable, make reasonable estimates based on context.  
+                            - Do not include any extra text—only the JSON object.  
+
+                            Example response format:  
+                            ```json
+                            {{
+                            "population": <value>,
+                            "buildvalue": <value>,
+                            "hrcn_ealp": <value>,
+                            "disaster_per_year_20": <value>,
+                            "disaster_per_year_10": <value>,
+                            "disaster_per_year_5": <value>,
+                            "disaster_per_year_1": <value>,
+                            "mean": <value>,
+                            "count": <value>
+                            }}
+                            """
+        if llm == "llama":
+            response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+        else:    
+            response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+            response = clean_deepseek_response(response)
+            
+        matches = re.findall(r'```json\n(.*?)\n```', response, re.DOTALL)
+    
+        for match in matches:
+            try:
+                response = json.loads(match)
+                for value in response.values():
+                    if type(value) != int and type(value) != float:
+                        raise json.JSONDecodeError("Invalid data type detected", '', 0)
+                break
+            except json.JSONDecodeError:
+                continue
+        print(response)
     except Exception as e:
+
         print(e)
         response = generate_json_params(query)
-    return json.loads(response)
+    return response
+
+def auto_create_summary_prompt(prediction, params):
+    prompt = ""
+    prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
+    prompt += "You predict the property damage per person per year per county.\n"
+    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
+    prompt += f"Your came to this conclusion through a local citizen coming to you with a description of your county.\n"
+    prompt += f"You had to estimate each of the following piece of information below\n"
+    prompt += f"Estimated population is {params["population"]}, Estimated value of all buildings in the county is {params["buildvalue"]}, "
+    prompt += f"Estimated Loss of live per year is {params["hrcn_ealp"]}, Estimated average number of hurricanes per year for the last 20 years {params["disaster_per_year_20"] / 20}, "
+    prompt += f"Estimated average number of hurricanes per year for the last 10 years {params["disaster_per_year_10"] / 10}, Estimated average number of hurricanes per year for the last 5 years {params["disaster_per_year_5"] / 5}, "
+    prompt += f"Estimated average number of hurricanes per year for the last year {params["disaster_per_year_1"]}, the Estimated average safety index of {params["mean"]}, and Estimated number of dams in this county are {params["count"]}.\n\n"
+    prompt += f"Give a summary report of why you gave this ranking and why u estimated each value.\n"
+    prompt += f"Respond only in the html format below.\n"
+
+    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>\n"
+    prompt += "<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n"
+    prompt += "These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"
+    return prompt
 
 @app.route("/auto_predict")
 def auto_predict():
@@ -82,50 +148,19 @@ def auto_predict():
 
     
     print("Generating summary report")
-    prompt = ""
-    prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
-    prompt += "You predict the property damage per person per year per county.\n"
-    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
-    prompt += f"Your came to this conclusion through a local citizen coming to you with a description of your county.\n"
-    prompt += f"You had to estimate each of the following piece of information below\n"
-    prompt += f"Estimated population is {params["population"]}, Estimated value of all buildings in the county is {params["buildvalue"]}, "
-    prompt += f"Estimated Loss of live per year is {params["hrcn_ealp"]}, Estimated average number of hurricanes per year for the last 20 years {params["disaster_per_year_20"]}, "
-    prompt += f"Estimated average number of hurricanes per year for the last 10 years {params["disaster_per_year_10"]}, Estimated average number of hurricanes per year for the last 5 years {params["disaster_per_year_5"]}, "
-    prompt += f"Estimated average number of hurricanes per year for the last year {params["disaster_per_year_1"]}, the Estimated average safety index of {params["mean"]}, and Estimated number of dams in this county are {params["count"]}.\n\n"
-    prompt += f"Give a summary report of why you gave this ranking and why u estimated each value.\n"
-    prompt += f"Respond only in the html format below.\n"
-
-    prompt += """<div class="summary"><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>
-
-<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n
-
-These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"""
-    response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
-    print(response['message']['content'])
+    prompt = auto_create_summary_prompt(prediction, params)
+    if llm == "llama":
+        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+    else:
+        response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+        response = clean_deepseek_response(response)
+    print(response)
+    
     return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
 
-
-@app.route("/man_predict")
-def man_predict():
-    global model
-    population = float(request.args.get("population"))
-    buildvalue = float(request.args.get("buildvalue"))
-    hrcn_ealp = float(request.args.get("hrcn_ealp"))
-    disaster_per_year_20 = float(request.args.get("disaster_per_year_20"))
-    disaster_per_year_10 = float(request.args.get("disaster_per_year_10"))
-    disaster_per_year_5 = float(request.args.get("disaster_per_year_5"))
-    disaster_per_year_1 = float(request.args.get("disaster_per_year_1"))
-    mean = float(request.args.get("mean"))
-    count = float(request.args.get("count"))
-
-    X = torch.tensor([population, buildvalue, hrcn_ealp,
-                      disaster_per_year_20, disaster_per_year_10,
-                      disaster_per_year_5, disaster_per_year_1,
-                      mean, count])
-    with torch.no_grad():  
-        prediction = model(X)
-    
-
+def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
+    disaster_per_year_20, disaster_per_year_10, disaster_per_year_5, disaster_per_year_1,
+    mean, count):
     prompt = ""
     prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
     prompt += "You predict the property damage per person per year per county.\n"
@@ -137,13 +172,46 @@ def man_predict():
     prompt += f"Give a summary report of why you gave this ranking.\n"
     prompt += f"Respond only in the html format below.\n"
 
-    prompt += """<div class="summary"><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>
+    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>\n"
+    prompt += "<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n"
+    prompt += "These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"
+    return prompt
 
-<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n
+@app.route("/man_predict")
+def man_predict():
+    global model
 
-These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"""
-    response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
-    print(response['message']['content'])
+    # Get all params out of api call
+    population = float(request.args.get
+                       ("population"))
+    buildvalue = float(request.args.get("buildvalue"))
+    hrcn_ealp = float(request.args.get("hrcn_ealp"))
+    disaster_per_year_20 = float(request.args.get("disaster_per_year_20"))
+    disaster_per_year_10 = float(request.args.get("disaster_per_year_10"))
+    disaster_per_year_5 = float(request.args.get("disaster_per_year_5"))
+    disaster_per_year_1 = float(request.args.get("disaster_per_year_1"))
+    mean = float(request.args.get("mean"))
+    count = float(request.args.get("count"))
+
+    # Apply NN on params
+    X = torch.tensor([population, buildvalue, hrcn_ealp,
+                      disaster_per_year_20, disaster_per_year_10,
+                      disaster_per_year_5, disaster_per_year_1,
+                      mean, count])
+    with torch.no_grad():  
+        prediction = model(X)
+    
+    # Create a summary report
+    prompt = man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
+    disaster_per_year_20, disaster_per_year_10, disaster_per_year_5, disaster_per_year_1,
+    mean, count)
+ 
+    if llm == "llama":
+        response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])
+    else:
+        response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
+        response = clean_deepseek_response(response)
+    
     return jsonify({'prediction': prediction.item(), 'response': response['message']['content']})
 
 @app.route("/")
