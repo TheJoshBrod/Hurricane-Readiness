@@ -152,3 +152,79 @@ td:nth-child(even){
     background-color: #d1e7fd;
 }
 
+/* Heatmap Comparison Section */
+.heatmap-slider .container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  margin: 0 auto;
+}
+.heatmap-slider .image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+}
+.heatmap-slider .slider-container {
+  width: 800px;
+  margin: 20px auto;
+  text-align: center;
+}
+.heatmap-slider input[type="range"] {
+  width: 100%;
+}
+
+.slider-labels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.legend-item img {
+  max-width: 200px;
+  height: auto;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.slider-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.legend-item img {
+  width: 150px;
+  height: auto;
+}

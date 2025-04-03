@@ -6,6 +6,7 @@ import json
 import io
 from datetime import timedelta, datetime
 import pandas as pd
+import heatmap_slider
 
 import matplotlib.pyplot as plt
 
@@ -101,6 +102,7 @@ def load_predicitve_data():
     df = df.drop(['HRCN_EALB', 'HRCN_EALA'], axis=1)
 
     # df['EALN'] = df['EAL'] / df['POPULATION']
+    df['EALNN'] = df['EAL'] 
     df['EAL'] = df['EAL'] / df['POPULATION']
 
     if os.path.exists(folder_path):
@@ -130,7 +132,11 @@ def load_predicitve_data():
     
     df = df[df["STATEABBRV"].isin(states)]
 
-    df.to_csv("output.csv", index=False)
+    output_path = os.path.join("processed_data", "data.csv")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    df.to_csv(output_path, index=False)
+
 
 if __name__ == "__main__":
     load_predicitve_data()
+    heatmap_slider.main()

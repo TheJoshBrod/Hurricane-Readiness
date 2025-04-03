@@ -67,3 +67,4 @@ urllib3==2.3.0
 Werkzeug==3.0.6
 zipp==3.21.0
 zope.interface==7.2
+ollama==0.4.7
