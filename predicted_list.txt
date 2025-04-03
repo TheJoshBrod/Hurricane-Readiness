@@ -1,0 +1,302 @@
+Location: Brunswick, North Carolina, Label: 999.1107788085938
+Location: Pamlico, North Carolina, Label: 898.9871215820312
+Location: Charleston, South Carolina, Label: 804.7743530273438
+Location: Harrison, Mississippi, Label: 720.3248901367188
+Location: Miami-Dade, Florida, Label: 717.4384155273438
+Location: Berkeley, South Carolina, Label: 692.8228149414062
+Location: Hancock, Mississippi, Label: 687.7090454101562
+Location: Sarasota, Florida, Label: 658.2227783203125
+Location: Baldwin, Alabama, Label: 588.3876342773438
+Location: Chambers, Texas, Label: 507.5302429199219
+Location: Coffee, Alabama, Label: 421.91729736328125
+Location: Jefferson, Florida, Label: 411.7547302246094
+Location: Citrus, Florida, Label: 411.54510498046875
+Location: Calhoun, Florida, Label: 382.41912841796875
+Location: Jackson, Florida, Label: 375.6885070800781
+Location: Geneva, Alabama, Label: 355.4188232421875
+Location: Glynn, Georgia, Label: 347.1775207519531
+Location: Pierce, Georgia, Label: 338.8067321777344
+Location: Bladen, North Carolina, Label: 332.504638671875
+Location: Dillon, South Carolina, Label: 313.9264221191406
+Location: Cameron, Texas, Label: 258.8445129394531
+Location: Caledonia, Vermont, Label: 233.8677978515625
+Location: Coffee, Georgia, Label: 221.76121520996094
+Location: Warren, North Carolina, Label: 214.3221893310547
+Location: Charles City, Virginia, Label: 211.6504669189453
+Location: Calhoun, Texas, Label: 204.7116241455078
+Location: Ware, Georgia, Label: 201.41592407226562
+Location: Perry, Mississippi, Label: 199.2221221923828
+Location: Bacon, Georgia, Label: 181.21287536621094
+Location: Lincoln, West Virginia, Label: 177.24435424804688
+Location: Echols, Georgia, Label: 172.4713134765625
+Location: Newton, Arkansas, Label: 167.51922607421875
+Location: DeWitt, Texas, Label: 165.45713806152344
+Location: Dale, Alabama, Label: 161.53616333007812
+Location: Pike, Alabama, Label: 154.50743103027344
+Location: Wayne, North Carolina, Label: 153.5712127685547
+Location: Pitt, North Carolina, Label: 153.36766052246094
+Location: Lewis, Kentucky, Label: 151.5218505859375
+Location: Decatur, Georgia, Label: 145.91397094726562
+Location: Madison, Arkansas, Label: 145.04122924804688
+Location: Webster, West Virginia, Label: 137.28179931640625
+Location: Grady, Georgia, Label: 128.1950225830078
+Location: Hampton, South Carolina, Label: 126.39633178710938
+Location: Crisp, Georgia, Label: 122.36197662353516
+Location: Dorchester, Maryland, Label: 115.38618469238281
+Location: Berrien, Georgia, Label: 112.3142318725586
+Location: Cleveland, Arkansas, Label: 108.16094970703125
+Location: Lincoln, Maine, Label: 101.26709747314453
+Location: Wilcox, Georgia, Label: 93.73983001708984
+Location: Prince George, Virginia, Label: 89.52529907226562
+Location: Lee, South Carolina, Label: 88.06976318359375
+Location: Worth, Georgia, Label: 86.88672637939453
+Location: Franklin, Mississippi, Label: 86.14663696289062
+Location: Washington, Mississippi, Label: 84.9220199584961
+Location: Lake, Florida, Label: 81.20655059814453
+Location: Jefferson, Georgia, Label: 77.09610748291016
+Location: Hidalgo, Texas, Label: 75.43880462646484
+Location: McCormick, South Carolina, Label: 72.25917053222656
+Location: Bibb, Alabama, Label: 68.21297454833984
+Location: Greene, New York, Label: 67.77899169921875
+Location: Charles, Maryland, Label: 64.55894470214844
+Location: Jefferson, Alabama, Label: 63.59091567993164
+Location: Cumberland, North Carolina, Label: 60.77206039428711
+Location: Suffolk, New York, Label: 59.8314094543457
+Location: Schenectady, New York, Label: 59.552024841308594
+Location: Real, Texas, Label: 57.2837028503418
+Location: Queens, New York, Label: 57.16032791137695
+Location: Nash, North Carolina, Label: 56.51735305786133
+Location: Lamar, Georgia, Label: 55.04814147949219
+Location: Lawrence, Arkansas, Label: 52.74905776977539
+Location: Nassau, New York, Label: 49.79341506958008
+Location: Perry, Alabama, Label: 49.61655807495117
+Location: Lee, Arkansas, Label: 48.12751388549805
+Location: Culpeper, Virginia, Label: 47.64984893798828
+Location: Tioga, New York, Label: 47.2655143737793
+Location: Caswell, North Carolina, Label: 47.15802001953125
+Location: Madison, Virginia, Label: 45.41054153442383
+Location: Nottoway, Virginia, Label: 44.39243698120117
+Location: Quitman, Georgia, Label: 43.91462326049805
+Location: Russell, Kentucky, Label: 43.417354583740234
+Location: Sumter, Alabama, Label: 43.28535079956055
+Location: Menard, Texas, Label: 42.35316467285156
+Location: Simpson, Mississippi, Label: 42.148643493652344
+Location: Autauga, Alabama, Label: 40.87308883666992
+Location: Houston, Tennessee, Label: 40.60334396362305
+Location: Johnson, Arkansas, Label: 40.41413116455078
+Location: Monroe, Kentucky, Label: 39.678890228271484
+Location: Union, South Carolina, Label: 39.6064567565918
+Location: Amelia, Virginia, Label: 38.90070343017578
+Location: Jasper, Mississippi, Label: 37.23286819458008
+Location: Lowndes, Alabama, Label: 37.18536376953125
+Location: Haywood, Tennessee, Label: 35.191226959228516
+Location: Scott, Mississippi, Label: 34.46476364135742
+Location: Lincoln, Georgia, Label: 34.006046295166016
+Location: Walker, Georgia, Label: 33.579071044921875
+Location: Cullman, Alabama, Label: 33.50260543823242
+Location: Bleckley, Georgia, Label: 33.26136016845703
+Location: Spartanburg, South Carolina, Label: 32.90877914428711
+Location: Clay, West Virginia, Label: 31.964073181152344
+Location: Newport, Rhode Island, Label: 31.884510040283203
+Location: Macon, Georgia, Label: 31.649044036865234
+Location: Travis, Texas, Label: 31.643238067626953
+Location: Orange, Virginia, Label: 30.913047790527344
+Location: Dauphin, Pennsylvania, Label: 30.259502410888672
+Location: Granville, North Carolina, Label: 30.14505958557129
+Location: Lonoke, Arkansas, Label: 30.039264678955078
+Location: Pulaski, Arkansas, Label: 30.021175384521484
+Location: Greene, Alabama, Label: 29.973323822021484
+Location: Knox, Kentucky, Label: 29.18148422241211
+Location: Starr, Texas, Label: 29.05218505859375
+Location: Aiken, South Carolina, Label: 28.67420768737793
+Location: Cheshire, New Hampshire, Label: 28.407066345214844
+Location: Yazoo, Mississippi, Label: 28.337343215942383
+Location: Lancaster, Pennsylvania, Label: 27.878097534179688
+Location: Pulaski, Kentucky, Label: 26.512096405029297
+Location: Madison, Tennessee, Label: 26.318777084350586
+Location: Montgomery, North Carolina, Label: 25.32520294189453
+Location: Major, Oklahoma, Label: 25.23672103881836
+Location: Woods, Oklahoma, Label: 24.30113983154297
+Location: Cobb, Georgia, Label: 23.806285858154297
+Location: Hancock, Maine, Label: 23.405670166015625
+Location: Montgomery, Mississippi, Label: 23.20321273803711
+Location: Crawford, Arkansas, Label: 22.459836959838867
+Location: Plymouth, Massachusetts, Label: 22.403919219970703
+Location: Lehigh, Pennsylvania, Label: 22.394912719726562
+Location: Salem, New Jersey, Label: 22.338613510131836
+Location: Montgomery, Texas, Label: 22.334293365478516
+Location: Anderson, South Carolina, Label: 22.312191009521484
+Location: Newton, Georgia, Label: 21.887405395507812
+Location: Grant, Kentucky, Label: 21.817916870117188
+Location: Albany, New York, Label: 20.254947662353516
+Location: Ashe, North Carolina, Label: 20.03891372680664
+Location: Gwinnett, Georgia, Label: 20.005321502685547
+Location: Putnam, Georgia, Label: 19.856021881103516
+Location: Collin, Texas, Label: 19.407711029052734
+Location: Lee, Virginia, Label: 19.240449905395508
+Location: Cross, Arkansas, Label: 18.487253189086914
+Location: Monroe, Pennsylvania, Label: 18.314605712890625
+Location: McDowell, North Carolina, Label: 18.299236297607422
+Location: Cumberland, Virginia, Label: 18.24011993408203
+Location: Hancock, Georgia, Label: 18.083782196044922
+Location: Terrell, Georgia, Label: 18.057687759399414
+Location: Patrick, Virginia, Label: 17.834339141845703
+Location: Fayette, West Virginia, Label: 17.787912368774414
+Location: Franklin, North Carolina, Label: 17.738754272460938
+Location: Hemphill, Texas, Label: 17.112037658691406
+Location: Passaic, New Jersey, Label: 17.080852508544922
+Location: Milam, Texas, Label: 16.98882484436035
+Location: Barnwell, South Carolina, Label: 16.84909439086914
+Location: Grimes, Texas, Label: 16.827953338623047
+Location: Bosque, Texas, Label: 16.798397064208984
+Location: Callahan, Texas, Label: 16.63652801513672
+Location: Anderson, Texas, Label: 16.491165161132812
+Location: Luzerne, Pennsylvania, Label: 16.43708038330078
+Location: Tate, Mississippi, Label: 16.322654724121094
+Location: Rabun, Georgia, Label: 16.249202728271484
+Location: Talladega, Alabama, Label: 16.040206909179688
+Location: Yalobusha, Mississippi, Label: 16.039051055908203
+Location: Bowie, Texas, Label: 16.027729034423828
+Location: Richmond, Georgia, Label: 15.893255233764648
+Location: Susquehanna, Pennsylvania, Label: 15.71751880645752
+Location: Worcester, Massachusetts, Label: 15.67366886138916
+Location: Mecklenburg, Virginia, Label: 15.648022651672363
+Location: Haralson, Georgia, Label: 15.617459297180176
+Location: Campbell, Virginia, Label: 15.60938549041748
+Location: Henderson, Kentucky, Label: 15.39245891571045
+Location: Woodward, Oklahoma, Label: 15.356675148010254
+Location: Oglethorpe, Georgia, Label: 15.29308032989502
+Location: Banks, Georgia, Label: 15.289483070373535
+Location: Weakley, Tennessee, Label: 15.272076606750488
+Location: Troup, Georgia, Label: 15.248845100402832
+Location: Oconee, South Carolina, Label: 15.245121955871582
+Location: Sterling, Texas, Label: 14.98276424407959
+Location: Lee, Texas, Label: 14.979886054992676
+Location: Richmond, North Carolina, Label: 14.911713600158691
+Location: Etowah, Alabama, Label: 14.752305030822754
+Location: Palo Pinto, Texas, Label: 14.68065357208252
+Location: Gray, Texas, Label: 14.646100044250488
+Location: Loudoun, Virginia, Label: 14.552935600280762
+Location: Litchfield, Connecticut, Label: 14.540005683898926
+Location: Washington, New York, Label: 14.053696632385254
+Location: Runnels, Texas, Label: 14.018807411193848
+Location: Yadkin, North Carolina, Label: 13.93774127960205
+Location: Logan, Arkansas, Label: 13.825406074523926
+Location: Union, New Mexico, Label: 13.772767066955566
+Location: Armstrong, Texas, Label: 13.767745018005371
+Location: Burke, North Carolina, Label: 13.76341724395752
+Location: Camp, Texas, Label: 13.7573881149292
+Location: Harding, New Mexico, Label: 13.719769477844238
+Location: Cayuga, New York, Label: 13.692666053771973
+Location: Limestone, Alabama, Label: 13.438855171203613
+Location: Guadalupe, Texas, Label: 13.304444313049316
+Location: Moore, Texas, Label: 12.933571815490723
+Location: Gilmer, Georgia, Label: 12.59782886505127
+Location: Rusk, Texas, Label: 12.229287147521973
+Location: Wise, Virginia, Label: 12.128586769104004
+Location: Carter, Oklahoma, Label: 11.999918937683105
+Location: Newton, Texas, Label: 11.960297584533691
+Location: Madison, Georgia, Label: 11.872502326965332
+Location: Crawford, Pennsylvania, Label: 11.738873481750488
+Location: Craighead, Arkansas, Label: 11.719014167785645
+Location: Bland, Virginia, Label: 11.640950202941895
+Location: Carroll, Kentucky, Label: 11.42155647277832
+Location: Lauderdale, Tennessee, Label: 11.379094123840332
+Location: Cumberland, Tennessee, Label: 11.365103721618652
+Location: Red River, Texas, Label: 11.362613677978516
+Location: Hamilton, Texas, Label: 11.354458808898926
+Location: Clarke, Georgia, Label: 11.17528247833252
+Location: Hartley, Texas, Label: 11.120179176330566
+Location: Angelina, Texas, Label: 11.111248970031738
+Location: Barren, Kentucky, Label: 10.804628372192383
+Location: Sevier, Arkansas, Label: 10.73458194732666
+Location: Union, North Carolina, Label: 10.668229103088379
+Location: Haskell, Texas, Label: 10.605266571044922
+Location: Fayette, Alabama, Label: 10.596806526184082
+Location: Clayton, Georgia, Label: 10.514199256896973
+Location: Bryan, Oklahoma, Label: 10.490927696228027
+Location: Putnam, Tennessee, Label: 10.43394947052002
+Location: Clinton, Kentucky, Label: 10.428620338439941
+Location: Hawkins, Tennessee, Label: 10.360846519470215
+Location: Lawrence, Tennessee, Label: 10.358864784240723
+Location: Ector, Texas, Label: 10.268502235412598
+Location: Rhea, Tennessee, Label: 10.25934886932373
+Location: Pontotoc, Oklahoma, Label: 10.200596809387207
+Location: Bradley, Tennessee, Label: 10.148999214172363
+Location: Choctaw, Oklahoma, Label: 10.093480110168457
+Location: Henderson, Texas, Label: 10.015063285827637
+Location: Dickens, Texas, Label: 9.818094253540039
+Location: Love, Oklahoma, Label: 9.694241523742676
+Location: Monroe, Tennessee, Label: 9.609517097473145
+Location: Upshur, West Virginia, Label: 9.59949016571045
+Location: Foard, Texas, Label: 9.575185775756836
+Location: Cherokee, North Carolina, Label: 9.46706485748291
+Location: Morris, Texas, Label: 9.285782814025879
+Location: Schuyler, New York, Label: 9.283215522766113
+Location: Overton, Tennessee, Label: 9.246356010437012
+Location: Union, Pennsylvania, Label: 9.167767524719238
+Location: Boyle, Kentucky, Label: 9.15250301361084
+Location: Bourbon, Kentucky, Label: 9.053711891174316
+Location: Berkshire, Massachusetts, Label: 9.003504753112793
+Location: Beaver, Pennsylvania, Label: 8.93774127960205
+Location: Robertson, Tennessee, Label: 8.816418647766113
+Location: Westmoreland, Pennsylvania, Label: 8.516366004943848
+Location: Delta, Texas, Label: 8.483683586120605
+Location: Putnam, West Virginia, Label: 8.473740577697754
+Location: Kent, Delaware, Label: 8.472893714904785
+Location: Dyer, Tennessee, Label: 8.27404499053955
+Location: Cambria, Pennsylvania, Label: 8.198014259338379
+Location: Dickson, Tennessee, Label: 8.090569496154785
+Location: Fentress, Tennessee, Label: 8.087836265563965
+Location: Owen, Kentucky, Label: 8.068102836608887
+Location: Atoka, Oklahoma, Label: 8.05731201171875
+Location: Stephens, Oklahoma, Label: 7.963743209838867
+Location: Coffee, Tennessee, Label: 7.924912452697754
+Location: Bath, Virginia, Label: 7.8574113845825195
+Location: Wilson, Tennessee, Label: 7.769101142883301
+Location: Collingsworth, Texas, Label: 7.7598114013671875
+Location: Fayette, Pennsylvania, Label: 7.710141181945801
+Location: Valencia, New Mexico, Label: 7.501782417297363
+Location: King, Texas, Label: 7.447277069091797
+Location: Roanoke, Virginia, Label: 7.259064674377441
+Location: Jefferson, Tennessee, Label: 7.200478553771973
+Location: Blount, Tennessee, Label: 7.200024604797363
+Location: Dukes, Massachusetts, Label: 7.082644462585449
+Location: Scurry, Texas, Label: 7.017512321472168
+Location: Jones, Texas, Label: 6.99222469329834
+Location: Santa Fe, New Mexico, Label: 6.877621650695801
+Location: Sullivan, Tennessee, Label: 6.822094917297363
+Location: Carter, Tennessee, Label: 6.757905006408691
+Location: Clarion, Pennsylvania, Label: 6.363656044006348
+Location: Sevier, Tennessee, Label: 6.306988716125488
+Location: Bell, Kentucky, Label: 5.9993791580200195
+Location: Smith, Tennessee, Label: 5.970707893371582
+Location: Coke, Texas, Label: 5.9446611404418945
+Location: Otero, New Mexico, Label: 5.907635688781738
+Location: Grant, New Mexico, Label: 5.842663764953613
+Location: Hopkins, Texas, Label: 5.553138732910156
+Location: Taos, New Mexico, Label: 5.493405342102051
+Location: Jefferson, Pennsylvania, Label: 5.480927467346191
+Location: Mason, West Virginia, Label: 5.28926944732666
+Location: Mineral, West Virginia, Label: 5.133152961730957
+Location: Roane, Tennessee, Label: 5.067994117736816
+Location: Mifflin, Pennsylvania, Label: 4.7676591873168945
+Location: Navarro, Texas, Label: 4.694422721862793
+Location: Pleasants, West Virginia, Label: 4.33944034576416
+Location: Harrison, Kentucky, Label: 4.298188209533691
+Location: Haskell, Oklahoma, Label: 3.0957629680633545
+Location: Cottle, Texas, Label: 2.909897565841675
+Location: Crockett, Texas, Label: 2.769207715988159
+Location: Snyder, Pennsylvania, Label: 1.136589765548706
+Location: Delaware, Oklahoma, Label: 0.9113214015960693
+Location: Robertson, Kentucky, Label: 0.870293378829956
+Location: Grady, Oklahoma, Label: 0.8015773296356201
+Location: Union, Kentucky, Label: 0.681388258934021
+Location: Craig, Oklahoma, Label: -0.8208153247833252
+Location: Lee, Kentucky, Label: -2.2962467670440674
+Location: Elliott, Kentucky, Label: -3.0761749744415283
+Location: Breckinridge, Kentucky, Label: -3.1421329975128174
+Location: Nicholas, Kentucky, Label: -3.215289354324341
+Location: Carroll, New Hampshire, Label: -4.293499946594238
+Location: Orleans, Vermont, Label: -4.961676597595215
+Location: Fleming, Kentucky, Label: -6.207851409912109

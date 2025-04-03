@@ -55,6 +55,8 @@ if __name__ == "__main__":
     from processed_data.preprocess import load_predicitve_data
     # df = load_predicitve_data()
     df = pd.read_csv("processed_data/data.csv")
+    df["county_state"] = df["COUNTY"] + ", " + df["STATE"]
+    location = df["county_state"].values
     
     df = df.dropna()
     scaler = StandardScaler()
@@ -70,7 +72,13 @@ if __name__ == "__main__":
     X = torch.tensor(df[columns].values, dtype=torch.float32)
     y = torch.tensor(df["EAL"].values, dtype=torch.float32)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X_train, X_test, y_train, y_test, location_train, location_test = train_test_split(X, y, location, test_size=0.2)
+
+    # Output actual list
+    sorted_data = sorted(zip(y_test, location_test), key=lambda x: x[0], reverse=True)
+    with open("list.txt", "w") as f:
+        for label, location in sorted_data:
+            f.write(f"Location: {location}, Label: {label}\n")
     
     # Create model
     model = Neural_Network()
@@ -104,3 +112,11 @@ if __name__ == "__main__":
     print(f'Root Mean Squared Error: {rmse:.4f}')
     print(f'R² (Coefficient of Determination): {r2:.4f}')
     torch.save(model, "predictive_model/model.pth")
+
+    # Output predicted list
+    sorted_data = sorted(zip(predictions, location_test), key=lambda x: x[0], reverse=True)
+    with open("predicted_list.txt", "w") as f:
+        for label, location in sorted_data:
+            f.write(f"Location: {location}, Label: {label}\n")
+
+            
