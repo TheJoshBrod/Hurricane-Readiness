@@ -192,11 +192,6 @@ td:nth-child(even){
   margin-top: 10px;
 }
 
-.legend-item img {
-  max-width: 200px;
-  height: auto;
-}
-
 .container {
   position: relative;
   width: 100%;
@@ -225,6 +220,6 @@ td:nth-child(even){
 }
 
 .legend-item img {
-  width: 150px;
+  width: 400px;
   height: auto;
 }
