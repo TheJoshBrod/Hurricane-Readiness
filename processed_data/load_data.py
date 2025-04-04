@@ -39,7 +39,6 @@ def fetch_and_filter_fema_disasters():
     output_path = os.path.join("raw_data", "FEMA-DDS", "filtered_disasters.json")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    # ✅ FIX: Wrap data in correct key to match your downstream code
     with open(output_path, "w") as f:
         json.dump({"DisasterDeclarationSummaries": data}, f, indent=4)
 

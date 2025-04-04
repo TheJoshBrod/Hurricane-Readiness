@@ -22,7 +22,17 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
 
 ### Data Collection Set-Up
 
-#### Disaster Declaration Summaries
+Start by attempting to automatically download the necessary data. If you have issues downloading it automatically, go through the steps to download it manually.
+
+#### Automatically Download Data
+
+To automatically download all data, execute:
+```bash
+python3 processed_data/load_data.py
+```
+If this is successful, proceed to "Processing Data" and skip all manual downloads.
+
+#### Manually Download Data: Disaster Declaration Summaries
 
 - Download [FEMA Disaster Declarations Summaries](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2) and save it as:  
   `raw_data/FEMA-DDS/all_disasters.json`
@@ -38,7 +48,7 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
   python3 collect_data/FEMA-DDS/UpdateDDS.py
   ```
 
-#### FEMA-HRI
+#### Manually Download Data: FEMA-HRI
 
 - Download [FEMA Hurricane Risk Index](https://hazards.fema.gov/nri/data-resources#csvDownload), clicking `All Counties - County-level detail (Table)`
 
@@ -51,7 +61,7 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
   ```
     * Formats raw_data and filters data to only relevant disasters 
 
-#### Dam Data Processing
+#### Manually Download Data: Dam Data Processing
 
 This component processes dam data from the National Inventory of Dams. **Note:** The dataset (`nation.csv`) and the resulting output JSON file (`dam_data.json`) are very large and are not included in this repository.
 
@@ -66,6 +76,13 @@ The dam data processing is managed by the `dams.py` script.
 To run the dam data processing, execute:
 ```bash
 python3 dams.py
+```
+
+### Processing Data
+
+To process the data, execute:
+```bash
+python3 processed_data/preprocess.py
 ```
 
 ### Visualizing Data
