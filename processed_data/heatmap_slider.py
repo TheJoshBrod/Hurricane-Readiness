@@ -4,7 +4,9 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib as mpl
-
+import requests
+import tempfile
+import zipfile
 
 def generate_legend(data_column, output_path, cmap='OrRd', num_ticks=6):
     import matplotlib as mpl
@@ -52,9 +54,8 @@ def generate_heatmap(state_fips, data_column, output_filename, output_dir="heatm
     # Filter by selected state 
     state_data = data[data['STATEFIPS'] == state_fips]
 
-    # Load US counties and filter to selected state 
-    shapefile_url = "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_county_5m.zip"
-    counties = gpd.read_file(shapefile_url)
+    # Load US counties and filter to selected state
+    counties = gpd.read_file("raw_data/cb_2022_us_county_5m/cb_2022_us_county_5m.shp")
     counties = counties[counties['STATEFP'] == state_fips]
     counties['GEOID'] = counties['GEOID'].astype(str).str.zfill(5)
 

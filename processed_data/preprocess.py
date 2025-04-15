@@ -17,7 +17,8 @@ warnings.simplefilter("ignore", DeprecationWarning)
 
 def load_dams_data(original: pd.DataFrame):
     # read nation.csv
-    df = pd.read_csv("raw_data/Dams/nation.csv", skiprows=1)
+    df = pd.read_csv("raw_data/Dams/nation.csv")
+    # print(df.columns)
 
     # get hazard score for each dam
     hazard_score = {

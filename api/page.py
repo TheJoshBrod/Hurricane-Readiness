@@ -54,13 +54,12 @@ def generate_json_params(query: str):
                                 - Number of buildings in the county.  
                                 - FEMA’s past estimates for similar-sized metropolitan areas.  
                             - hrcn_ealp: The estimated loss of life per year due to hurricanes in this county.  
-                            - disaster_per_year_20: The average number of hurricanes per year over the last 20 years (total hurricanes in 20 years / 20).  
-                            - disaster_per_year_10: The average number of hurricanes per year over the last 10 years (total hurricanes in 10 years / 10).  
-                            - disaster_per_year_5: The average number of hurricanes per year over the last 5 years (total hurricanes in 5 years / 5).  
+                            - disaster_per_year_20: The number of hurricanes that happened here over the last 20 years.  
+                            - disaster_per_year_10: The number of hurricanes that happened here over the last 10 years.  
+                            - disaster_per_year_5: The number of hurricanes that happened here over the last 5 years.  
                             - disaster_per_year_1: The number of hurricanes that occurred in the last year.  
-                            - mean: The average dam safety index score in the county.  The following scores mean the following ratings Low 3, Significant 5, high 10. Only give the number
-                            - count: The number of dams in the county.  
-
+                            - mean: The average dam safety index score in the county.  The following scores mean the following ratings Low risk 3 - high risk 10. Only give the number
+                            - count: Guess of the quantity of dams in the county (If unsure give a lower number).  
                             
                             OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW NO EXTRA TEXT ONLY JSON:
                             OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW NO EXTRA TEXT ONLY JSON:
@@ -94,11 +93,13 @@ def generate_json_params(query: str):
                         raise json.JSONDecodeError("Invalid data type detected", '', 0)
                 break
             except json.JSONDecodeError:
+                print("json.decodeerror")
                 continue
-        print(response)
+        if type(response) != dict:
+            response = json.loads(response)
+        
     except Exception as e:
-
-        print(e)
+        print(response)
         response = generate_json_params(query)
     return response
 
@@ -129,19 +130,25 @@ def auto_predict():
     params = generate_json_params(user_response)
     
     print("Generated estimates")
+    
     print(params)
 
     X = torch.tensor([float(params["population"]),
                       float(params["buildvalue"]),
                       float(params["hrcn_ealp"]),
-                      float(params["disaster_per_year_20"]),
-                      float(params["disaster_per_year_10"]),
-                      float(params["disaster_per_year_5"]),
+                      float(params["disaster_per_year_20"] / 20.0),
+                      float(params["disaster_per_year_10"] / 10.0),
+                      float(params["disaster_per_year_5"] / 5.0),
                       float(params["disaster_per_year_1"]),
                       float(params["mean"]),
                       float(params["count"])])
+    min_val = X.min()
+    max_val = X.max()
+    normalized = (X - min_val) / (max_val - min_val)
+
+
     with torch.no_grad():  
-        prediction = model(X)
+        prediction = model(normalized)
     print(f"Predicted value is {prediction.item()}")
 
     
@@ -197,8 +204,11 @@ def man_predict():
                       disaster_per_year_20, disaster_per_year_10,
                       disaster_per_year_5, disaster_per_year_1,
                       mean, count])
+    min_val = X.min()
+    max_val = X.max()
+    normalized = (X - min_val) / (max_val - min_val)
     with torch.no_grad():  
-        prediction = model(X)
+        prediction = model(normalized)
     
     # Create a summary report
     prompt = man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
