@@ -58,20 +58,11 @@ def generate_json_params(query: str):
                             - disaster_per_year_10: The average number of hurricanes per year over the last 10 years (total hurricanes in 10 years / 10).  
                             - disaster_per_year_5: The average number of hurricanes per year over the last 5 years (total hurricanes in 5 years / 5).  
                             - disaster_per_year_1: The number of hurricanes that occurred in the last year.  
-                            - mean: The average dam safety index score in the county.  
-                                mean_hazard_score = {{
-                                    "Low": 3,
-                                    "Significant": 5,
-                                    "High": 10
-                                }}
+                            - mean: The average dam safety index score in the county.  The following scores mean the following ratings Low 3, Significant 5, high 10. Only give the number
                             - count: The number of dams in the county.  
 
-                            Response format:  
-                            - Output your response as a single JSON object.  
-                            - If exact values are unavailable, make reasonable estimates based on context.  
-                            - Do not include any extra text—only the JSON object.  
-
-                            Example response format:  
+                            
+                            OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW:  
                             ```json
                             {{
                             "population": <value>,
