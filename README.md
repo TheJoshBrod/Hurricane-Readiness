@@ -30,7 +30,7 @@ This repo already includes all of the csv/json/photos needed for the project to 
 
 3.) When Ollama serve is running, in a new terminal run `ollama run llama3.2:latest`
 
-4.) Wait until the model finishes installing, then close that terminal (leave the ollama serve terminal open)
+4.) Wait until the model finishes installing, then close that terminal with `/bye` (leave the other terminal where you ran `ollama serve` running)
 
 ### Start the backend API
 
