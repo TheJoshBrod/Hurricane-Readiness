@@ -31,7 +31,6 @@ plotly
 pyogrio
 pyparsing
 pyproj
-python-dateutilpost0
 pytz
 requests
 retrying
