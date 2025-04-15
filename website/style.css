@@ -154,18 +154,17 @@ td:nth-child(even){
 
 /* Heatmap Comparison Section */
 .heatmap-slider .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   width: 800px;
   height: 500px;
   margin: 0 auto;
 }
 .heatmap-slider .image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: 500px;
+  width: auto;
   transition: opacity 0.2s ease;
 }
 .heatmap-slider .slider-container {
