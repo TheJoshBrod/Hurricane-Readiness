@@ -62,7 +62,9 @@ def generate_json_params(query: str):
                             - count: The number of dams in the county.  
 
                             
-                            OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW:  
+                            OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW NO EXTRA TEXT ONLY JSON:
+                            OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW NO EXTRA TEXT ONLY JSON:
+                            OUTPUT MUST BE FORMATTED EXACTLY IN THE FORM BELOW NO EXTRA TEXT ONLY JSON:  
                             ```json
                             {{
                             "population": <value>,
