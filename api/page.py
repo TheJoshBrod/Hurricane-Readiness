@@ -18,9 +18,12 @@ from sklearn.preprocessing import StandardScaler
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../predictive_model')))
 from neural_network import Neural_Network
 
+import joblib
+
 predictions = []
 data = []
 model = ""
+scaler = ""
 llm = "llama"
 
 app = Flask(__name__)
@@ -125,6 +128,7 @@ def auto_create_summary_prompt(prediction, params):
 @app.route("/auto_predict")
 def auto_predict():
     global model
+    global scaler
     print("Begining auto predict")
     user_response = unquote(request.args.get("query"))
     params = generate_json_params(user_response)
@@ -142,10 +146,7 @@ def auto_predict():
                       float(params["disaster_per_year_1"]),
                       float(params["mean"]),
                       float(params["count"])])
-    min_val = X.min()
-    max_val = X.max()
-    normalized = (X - min_val) / (max_val - min_val)
-
+    normalized = scaler.transform(X)
 
     with torch.no_grad():  
         prediction = model(normalized)
@@ -185,6 +186,7 @@ def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
 @app.route("/man_predict")
 def man_predict():
     global model
+    global scaler
     print("Creating prediction from manual entry")
 
     # Get all params out of api call
@@ -204,9 +206,7 @@ def man_predict():
                       disaster_per_year_20, disaster_per_year_10,
                       disaster_per_year_5, disaster_per_year_1,
                       mean, count])
-    min_val = X.min()
-    max_val = X.max()
-    normalized = (X - min_val) / (max_val - min_val)
+    normalized = scaler.fit_transform(X)
     with torch.no_grad():  
         prediction = model(normalized)
     
@@ -237,6 +237,7 @@ def homepage():
 if __name__ == "__main__":
     model = torch.load("predictive_model/model.pth", weights_only=False)
     model.eval()
+    scaler = joblib.load('predictive_model/scaler.pkl')
 
     df = pd.read_csv("processed_data/data.csv")
     df = df.dropna()

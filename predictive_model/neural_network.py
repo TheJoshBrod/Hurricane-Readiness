@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 import pandas as pd
+import joblib
 
 class Neural_Network(torch.nn.Module):
     def __init__(self) -> None:
@@ -52,7 +53,7 @@ def train_nn(model: Neural_Network, X_train, y_train, optimizer, criterion, epoc
 if __name__ == "__main__":
     # Load Data
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-    from processed_data.preprocess import load_predicitve_data
+    # from processed_data.preprocess import load_predicitve_data
     # df = load_predicitve_data()
     df = pd.read_csv("processed_data/data.csv")
     df["county_state"] = df["COUNTY"] + ", " + df["STATE"]
@@ -67,56 +68,56 @@ if __name__ == "__main__":
     print("~~~~~\n\n\n")
     print(df.head())
     df[columns] = scaler.fit_transform(df[columns])
-
+    joblib.dump(scaler, 'scaler.pkl')
     # Split data for X,y
-    X = torch.tensor(df[columns].values, dtype=torch.float32)
-    y = torch.tensor(df["EAL"].values, dtype=torch.float32)
+    # X = torch.tensor(df[columns].values, dtype=torch.float32)
+    # y = torch.tensor(df["EAL"].values, dtype=torch.float32)
 
-    X_train, X_test, y_train, y_test, location_train, location_test = train_test_split(X, y, location, test_size=0.2)
+    # X_train, X_test, y_train, y_test, location_train, location_test = train_test_split(X, y, location, test_size=0.2)
 
-    # Output actual list
-    sorted_data = sorted(zip(y_test, location_test), key=lambda x: x[0], reverse=True)
-    with open("list.txt", "w") as f:
-        for label, location in sorted_data:
-            f.write(f"Location: {location}, Label: {label}\n")
+    # # Output actual list
+    # sorted_data = sorted(zip(y_test, location_test), key=lambda x: x[0], reverse=True)
+    # with open("list.txt", "w") as f:
+    #     for label, location in sorted_data:
+    #         f.write(f"Location: {location}, Label: {label}\n")
     
-    # Create model
-    model = Neural_Network()
-    for name, param in model.named_parameters():
-        print(name, param.shape)
+    # # Create model
+    # model = Neural_Network()
+    # for name, param in model.named_parameters():
+    #     print(name, param.shape)
 
-    # Set hyper parameters 
-    params = model.parameters()
-    learning_rate = 1e-3
-    criterion = torch.nn.MSELoss()
-    optimizer = torch.optim.Adam(params=params, lr=learning_rate, weight_decay=0.01)
+    # # Set hyper parameters 
+    # params = model.parameters()
+    # learning_rate = 1e-3
+    # criterion = torch.nn.MSELoss()
+    # optimizer = torch.optim.Adam(params=params, lr=learning_rate, weight_decay=0.01)
 
-    train_nn(model, X_train, y_train, optimizer, criterion)
-    print("Finished training!")
+    # train_nn(model, X_train, y_train, optimizer, criterion)
+    # print("Finished training!")
 
 
-    # Calculate performance
-    with torch.no_grad():  
-        predictions = model(X_test)
+    # # Calculate performance
+    # with torch.no_grad():  
+    #     predictions = model(X_test)
 
    
-    predictions = predictions.squeeze() 
-    predictions = predictions.cpu().numpy()
-    y_test = y_test.cpu().numpy()
+    # predictions = predictions.squeeze() 
+    # predictions = predictions.cpu().numpy()
+    # y_test = y_test.cpu().numpy()
 
-    mse = mean_squared_error(y_test, predictions)
-    rmse = np.sqrt(mse)
-    r2 = r2_score(y_test, predictions)
+    # mse = mean_squared_error(y_test, predictions)
+    # rmse = np.sqrt(mse)
+    # r2 = r2_score(y_test, predictions)
 
-    print(f'Mean Squared Error: {mse:.4f}')
-    print(f'Root Mean Squared Error: {rmse:.4f}')
-    print(f'R² (Coefficient of Determination): {r2:.4f}')
-    torch.save(model, "predictive_model/model.pth")
+    # print(f'Mean Squared Error: {mse:.4f}')
+    # print(f'Root Mean Squared Error: {rmse:.4f}')
+    # print(f'R² (Coefficient of Determination): {r2:.4f}')
+    # torch.save(model, "predictive_model/model.pth")
 
-    # Output predicted list
-    sorted_data = sorted(zip(predictions, location_test), key=lambda x: x[0], reverse=True)
-    with open("predicted_list.txt", "w") as f:
-        for label, location in sorted_data:
-            f.write(f"Location: {location}, Label: {label}\n")
+    # # Output predicted list
+    # sorted_data = sorted(zip(predictions, location_test), key=lambda x: x[0], reverse=True)
+    # with open("predicted_list.txt", "w") as f:
+    #     for label, location in sorted_data:
+    #         f.write(f"Location: {location}, Label: {label}\n")
 
             
