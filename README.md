@@ -12,13 +12,37 @@ Our project is to try and raise awareness to these high risk dams, and make sure
 
 According to NASA, "There are 4 key elements needed for a hurricane: warm ocean water, lots of moisture in the air, low vertical wind shear, and a pre-existing disturbance (e.g., a cluster of thunderstorms)"\cite{NASA}. As climate change starts to increase temperatures across the globe, its important to consider which areas now posses all these factors, when they didn't previously. With rising sea levels, more areas are closer than ever to warm ocean water, so checking who is in proximity now can help estimate where we need to consider. Also, as the world warms up, there's more available moisture in the air, bringing two of the most critical and hardest factors of hurricanes to more regions than ever before. By trying to figure out where these areas are, we can then cross reference our list of dams that aren't maintained or are at risk of breaching with these newly endangered regions, and hopefully warn residents before they get hit with the next wave of storms.
 
-## SET-UP PROJECT
+## SET-UP PROJECT 
+
+This repo already includes all of the csv/json/photos needed for the project to run, you just need to install/run the following commands
 
 ### General Python Set-Up
 
 1.) Install [Python3.X](https://www.python.org/downloads/)
 
 2.) Run the following `pip install -r requirements.txt`
+
+### General Ollama/llama3.2 Set-Up
+
+1.) Install [Ollama](https://ollama.com/download/linux), follow instruction on the page
+
+2.) Once installed run `ollama serve` in a terminal of the OS Ollama was installed for (Windows: powershell, WSL: ubuntu, etc.)
+
+3.) When Ollama serve is running, in a new terminal run `ollama run llama3.2:latest`
+
+4.) Wait until the model finishes installing, then close that terminal (leave the ollama serve terminal open)
+
+### Start the backend API
+
+1.) run `python3 api/page.py`
+
+### Open the front-end UI
+
+1.) Open the website/index.html file with your browser (this can be done a numerous of ways)
+
+## Collect Data:
+
+This is only for those wanting more up-to-date data than 4/15/2025
 
 ### Data Collection Set-Up
 
@@ -84,10 +108,3 @@ To process the data, execute:
 ```bash
 python3 processed_data/preprocess.py
 ```
-
-### Visualizing Data
-
-- Run `python3 api/page.py`
-    - This will start the api that will retrieve all of our data
-
-- Open `website/index.html`
