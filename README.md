@@ -22,7 +22,7 @@ According to NASA, "There are 4 key elements needed for a hurricane: warm ocean 
 
 ### Data Collection Set-Up
 
-Start by attempting to automatically download the necessary data. If you have issues downloading it automatically, go through the steps to download it manually.
+Start by attempting to automatically download the necessary data. If you have issues downloading it automatically, go through the steps to download it manually. 
 
 #### Automatically Download Data
 
