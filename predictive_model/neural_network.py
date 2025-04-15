@@ -62,7 +62,6 @@ if __name__ == "__main__":
     df = df.dropna()
     scaler = StandardScaler()
     columns = ["POPULATION", "BUILDVALUE", 'HRCN_EALP',
-            #    'RFLD_EALB', 'RFLD_EALA', 'RFLD_EALP',
             "DISASTER_PER_YEAR_20", "DISASTER_PER_YEAR_10", "DISASTER_PER_YEAR_5", "DISASTER_PER_YEAR_1",
             "mean", "count"]
     print("~~~~~\n\n\n")

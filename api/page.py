@@ -110,7 +110,7 @@ def auto_create_summary_prompt(prediction, params):
     prompt = ""
     prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
     prompt += "You predict the property damage per person per year per county.\n"
-    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
+    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction}.\n"
     prompt += f"Your came to this conclusion through a local citizen coming to you with a description of your county.\n"
     prompt += f"You had to estimate each of the following piece of information below\n"
     prompt += f"Estimated population is {params['population']}, Estimated value of all buildings in the county is {params['buildvalue']}, "
@@ -146,11 +146,13 @@ def auto_predict():
                       float(params["disaster_per_year_1"]),
                       float(params["mean"]),
                       float(params["count"])])
-    normalized = scaler.transform(X)
-
+    X_np = X.numpy().reshape(1, -1)
+    normalized = scaler.transform(X_np)
+    normalized_tensor = torch.tensor(normalized, dtype=torch.float32)
     with torch.no_grad():  
-        prediction = model(normalized)
-    print(f"Predicted value is {prediction.item()}")
+        prediction = model(normalized_tensor)
+    prediction = round(prediction.item(), 2)
+    print(f"Predicted value is {prediction}")
 
     
     print("Generating summary report")
@@ -162,7 +164,7 @@ def auto_predict():
         response = clean_deepseek_response(response)
     print(response)
     
-    return jsonify({'prediction': prediction.item(), 'response': response})
+    return jsonify({'prediction': prediction, 'response': response})
 
 def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
     disaster_per_year_20, disaster_per_year_10, disaster_per_year_5, disaster_per_year_1,
@@ -170,7 +172,7 @@ def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
     prompt = ""
     prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
     prompt += "You predict the property damage per person per year per county.\n"
-    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction.item()}.\n"
+    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction}.\n"
     prompt += f"Your came to this conclusion through population is {population}, the value of all buildings in the county is {buildvalue}, "
     prompt += f"Estimated Loss of live per year is {hrcn_ealp}, average number of hurricanes per year for the last 20 years {disaster_per_year_20}, "
     prompt += f"average number of hurricanes per year for the last 10 years {disaster_per_year_10}, average number of hurricanes per year for the last 5 years {disaster_per_year_5}, "
@@ -206,9 +208,14 @@ def man_predict():
                       disaster_per_year_20, disaster_per_year_10,
                       disaster_per_year_5, disaster_per_year_1,
                       mean, count])
-    normalized = scaler.fit_transform(X)
+    X_np = X.numpy().reshape(1, -1)
+    normalized = scaler.transform(X_np)
+    normalized_tensor = torch.tensor(normalized, dtype=torch.float32)
     with torch.no_grad():  
-        prediction = model(normalized)
+        prediction = model(normalized_tensor)
+    prediction = round(prediction.item(), 2)
+    print(f"Predicted value is {prediction}")
+
     
     # Create a summary report
     prompt = man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
@@ -221,7 +228,7 @@ def man_predict():
         response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
         response = clean_deepseek_response(response)
     
-    return jsonify({'prediction': prediction.item(), 'response': response})
+    return jsonify({'prediction': prediction, 'response': response})
 
 @app.route("/")
 def homepage():
@@ -241,14 +248,12 @@ if __name__ == "__main__":
 
     df = pd.read_csv("processed_data/data.csv")
     df = df.dropna()
-    scaler = StandardScaler()
     columns = ["POPULATION", "BUILDVALUE", 'HRCN_EALP',
             "DISASTER_PER_YEAR_20", "DISASTER_PER_YEAR_10", "DISASTER_PER_YEAR_5", "DISASTER_PER_YEAR_1",
             "mean", "count"]
     print("~~~~~\n\n\n")
     print(df.head())
-    df[columns] = scaler.fit_transform(df[columns])
-
+    df[columns] = scaler.transform(df[columns])
   
     X = torch.tensor(df[columns].values, dtype=torch.float32)
     with torch.no_grad():  
