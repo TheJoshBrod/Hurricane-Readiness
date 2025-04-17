@@ -146,8 +146,6 @@ def auto_create_summary_prompt(prediction, params, context):
     prompt += "<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n"
     prompt += "<h3>Overall Assessment:</h3>\n"
     prompt += "<p>These factors combined indicate that this county is at {blank aka low, moderate, high with green, dark orange, or red css color for this one word} risk for significant property damage and disruption to daily life due to hurricanes.</p>\n</div>"
-    with open("test.out", "w") as f:
-        f.write(prompt)
     return prompt
 
 
