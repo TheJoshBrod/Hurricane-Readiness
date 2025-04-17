@@ -52,6 +52,12 @@
         });
 
         $("#man_newcounty-form").submit(function (event) {
+            const form = this;
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
             event.preventDefault();
 
             let url = "http://127.0.0.1:5000/man_predict?";
@@ -90,6 +96,12 @@
         });
 
         $("#auto_newcounty-form").submit(function (event){
+            const form = this;
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
             event.preventDefault();
             let query_safe = encodeURIComponent($("#expandable").val());
             let url = `http://127.0.0.1:5000/auto_predict?query=${query_safe}`
@@ -328,32 +340,46 @@
     <!-- Manual Prediction Section -->
     <section class="man_newcounty">
       <form id="man_newcounty-form">
-          <label for="population">Population</label>
-          <input type="text" id="population" name="population">
+          <label for="population">County Population</label>
+          <small>ONLY enter numeric characters</small>
+          <input type="text" id="population" name="population" placeholder="ex. 1000000" required>
 
-          <label for="buildvalue">Value of All Buildings</label>
-          <input type="text" id="buildvalue" name="buildvalue">
+          <label for="buildvalue">Value of All Buildings in County</label>
+          <small>ONLY enter numeric characters with maxmimum one decimal point (value in USD)</small>
+          <input type="text" id="buildvalue" name="buildvalue" placeholder="ex. 35000000000" required>
 
-          <label for="hrcn_ealp">Estimated Hurricane Fatalities</label>
-          <input type="text" id="hrcn_ealp" name="hrcn_ealp">
+          <label for="hrcn_ealp">Estimated Fatalities Caused by Hurricanes Per Year in County</label>
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <input type="text" id="hrcn_ealp" name="hrcn_ealp" placeholder="ex. 0.2" required>
 
           <label for="disaster_per_year_20">Number of Hurricanes per year (20-year span)</label>
-          <input type="text" id="disaster_per_year_20" name="disaster_per_year_20">
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <small>Total number of hurricanes in the last 20 years DIVIDED by 20</small>
+          <input type="text" id="disaster_per_year_20" name="disaster_per_year_20" placeholder="ex. 0.2" required>
 
           <label for="disaster_per_year_10">Number of Hurricanes per year (10-year span)</label>
-          <input type="text" id="disaster_per_year_10" name="disaster_per_year_10">
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <small>Total number of hurricanes in the last 10 years DIVIDED by 10</small>
+          <input type="text" id="disaster_per_year_10" name="disaster_per_year_10" placeholder="ex. 0.2" required>
 
           <label for="disaster_per_year_5">Number of Hurricanes per year (5-year span)</label>
-          <input type="text" id="disaster_per_year_5" name="disaster_per_year_5">
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <small>Total number of hurricanes in the last 5 years DIVIDED by 5</small>
+          <input type="text" id="disaster_per_year_5" name="disaster_per_year_5" placeholder="ex. 0.2" required>
 
           <label for="disaster_per_year_1">Number of Hurricanes per year (Last Year)</label>
-          <input type="text" id="disaster_per_year_1" name="disaster_per_year_1">
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <small>Total number of hurricanes in the last year</small>
+          <input type="text" id="disaster_per_year_1" name="disaster_per_year_1" placeholder="ex. 1" required>
 
-          <label for="mean">Average Dam Safety Index</label>
-          <input type="text" id="mean" name="mean">
+          <label for="mean">Average Dam Safety Index of Dams in County</label>
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <small>Scale of 3-10 (3: Very Low Risk, 10: High Risk)</small>
+          <input type="text" id="mean" name="mean" placeholder="ex. 5" required>
 
-          <label for="count">Number of Dams</label>
-          <input type="text" id="count" name="count">
+          <label for="count">Total Number of Dams in County</label>
+          <small>ONLY enter numeric characters with maxmimum one decimal point</small>
+          <input type="text" id="count" name="count" placeholder="ex. 25" required>
 
           <button type="submit">Submit</button>
       </form>
@@ -370,7 +396,16 @@
     <section class="auto_newcounty">
       <form id="auto_newcounty-form">
           <label for="chat-submission">Enter all information about your area:</label>
-          <textarea id="expandable" name="message" rows="3" placeholder="Start typing..." required></textarea>
+          <small>Please repsond with any information you deem relevant in any structure</small>
+          <textarea 
+  id="expandable" 
+  name="message" 
+  rows="4" 
+  placeholder="Start typing...
+
+&quot;I live in Orange County Florida, I think my county population is...&quot;"
+  required>
+</textarea>
           <button type="submit">Submit</button>
       </form>
       <div class="auto-prediction">

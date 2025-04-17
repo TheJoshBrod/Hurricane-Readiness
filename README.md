@@ -102,11 +102,11 @@ This repo already includes all of the csv/json/photos needed for the project to 
 
 1.) Install [Ollama](https://ollama.com/download/linux), follow instruction on the page
 
-2.) Once installed run `ollama serve` in a terminal of the OS Ollama was installed for (Windows: powershell, WSL: ubuntu, etc.)
+2.) Once installed run `ollama serve` in a terminal of the OS Ollama was installed for (Windows: powershell, WSL: ubuntu, etc.). Note that it will either print a lot of log information OR it may say something similar to `Error: listen tcp 127.0.0.1:11434: bind: address already in use`, both mean it was successful and you can continue to the next step. 
 
-3.) When Ollama serve is running, in a new terminal run `ollama run llama3.2:latest`
+3.) When Ollama serve is running, in a **_new terminal_** run `ollama run llama3.2:latest`
 
-4.) Wait until the model finishes installing, then close that terminal with `/bye` (leave the other terminal where you ran `ollama serve` running)
+4.) Wait until the model finishes installing, then close that terminal with `/bye` (leave the other terminal open where you ran `ollama serve` running)
 
 ### Start the backend API
 
