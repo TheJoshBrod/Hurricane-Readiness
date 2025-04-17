@@ -2,17 +2,84 @@
 
 Final Project for EECS 486: Information Retrieval
 
-## ABOUT
+This project aims to help legistlators and activists to estimate property damage homeowners may face living in their county. 
 
-As climate change brings more frequent and more unpredictable storms, people are often faced with devastation to personal property, and emotional anguish over losing possessions that have been with their families for generations. Hurricanes, in particular, have both increased in intensity and unpredictability. As future generations are faced with these increasingly dangerous storms, we want to make sure that people are more prepared and ready to weather the natural disasters ahead.
+The repository offers the following options:
 
-Hurricanes are especially hard-hitting due to both torrential rainfall and wind speeds that can decimate infrastructure. In the past decade, storms that caused high casualties and unprecedented property damage have one thing in common: failure of the dam system. During Hurricane Katrina in 2005, the levees around the city failed. This flooded about 80\% of the city for weeks, stranding survivors. In addition, stagnant water spread black mold to millions of homes, making them uninhabitable after the storm. During hurricane Harvey, in 2017, the dams were breached, letting unprecedented flooding into residential areas, impacting the homes of millions once again. Just last year, the failure of the Lake Lure dam in North Carolina caused even more damage and loss of life. All of these dams were classified as high risk; if they broke, people would die. And yet, all of them weren’t maintained or updated, leaving these areas vulnerable to disaster. However, what made the North Carolina disasters so dangerous was climate change. Previously, inland North Carolina had received residual rainfall from hurricanes, like remaining rain bands and more. However, last year, the hurricane traveled further inland than ever before, bringing flooding and damage unlike anything the region had seen. Dam inventory can help, but only if one knows where to look.
-	
-Our project is to try and raise awareness to these high risk dams, and make sure any disrepair is remedied before it's too late. By using the national inventory of dams, we are going to find a ranked list of both highest risk and least maintained dams in hurricane regions, finding the areas at most critical danger. However, as weather patterns change, so do the areas where hurricanes make landfall and impact. Because of this, we are also going to try and predict the newer hurricane prone area, and take this into account. If an area is newly hurricane prone and has unmaintained high-risk dams, those areas are more critical than those currently in hurricane zones due to their lack of familiarity and preparation on the subject. So, taking into account historical hurricane data, new weather patterns, dam risk, and dam maintenance, we hope to find the areas most unprepared for such a natural disaster and raise awareness so they can save their community before climate change strikes.
+- Compare our predictive Feed Forward Neural Net (FFNN) model compares to actual historic data 
 
-According to NASA, "There are 4 key elements needed for a hurricane: warm ocean water, lots of moisture in the air, low vertical wind shear, and a pre-existing disturbance (e.g., a cluster of thunderstorms)"\cite{NASA}. As climate change starts to increase temperatures across the globe, its important to consider which areas now posses all these factors, when they didn't previously. With rising sea levels, more areas are closer than ever to warm ocean water, so checking who is in proximity now can help estimate where we need to consider. Also, as the world warms up, there's more available moisture in the air, bringing two of the most critical and hardest factors of hurricanes to more regions than ever before. By trying to figure out where these areas are, we can then cross reference our list of dams that aren't maintained or are at risk of breaching with these newly endangered regions, and hopefully warn residents before they get hit with the next wave of storms.
+<video width="640" height="360" controls>
+  <source src="assets/video_demo/Search_Existing_Results.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-## SET-UP PROJECT 
+- Manually enter your own county's data to see an estimate of property damage per person your county can expect this upcoming year 
+
+<video width="640" height="360" controls>
+  <source src="assets/video_demo/Manual_Entry.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+- Prompt an LLM with the relevant context about your area so it can make a predictition about information about your county (such as Population, Dam count, Hurricane Freq, etc.) to use as an input for the FFNN.
+
+<video width="640" height="360" controls>
+  <source src="assets/video_demo/Chatbot_Assisted_Prediction.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+- See our methodology
+
+<video width="640" height="360" controls>
+  <source src="assets/video_demo/Methodology.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+
+****WARNING** in these videos we used gpt-4o-mini, however the instructions below use llama3.2:latest. This discrepancy impacts time for the Manual Entries & Chatbot Assisted Prediction substatially. Read the messages printed from the terminal running `api/page.py` to make sure it is loading correctly.
+
+## Repo Structure
+
+<pre>
+.
+├── README.md
+├── api                                       // Run to call NN and LLMs
+│   └── page.py
+├── assets                                    // Various Assets for the UI/video tutorials
+│   ├── fema_regions_map.png
+│   ├── heatmap_images
+│   └── video_demo
+├── collect_data                             // Scripts to format all data to JSON
+│   ├── Dams
+│   ├── FEMA-DDS
+│   └── FEMA-HRI
+├── evaluation                               // Scripts to evaluate performance
+│   └── performance.py
+├── list.txt
+├── metrics.txt
+├── predicted_list.txt
+├── predictive_model                         // Information about the Feed Forward Neural Net AND other attempted models
+│   ├── logistic_nb_model.py
+│   ├── model.pth
+│   ├── multiple_linear_regression.py
+│   ├── neural_network.py
+│   └── scaler.pkl
+├── processed_data                           // Scripts to combine all JSON files above into one usable CSV file
+│   ├── data.csv
+│   ├── heatmap_slider.py
+│   ├── load_data.py
+│   └── preprocess.py
+├── raw_data                                 // Initialled downloaded files from websites listed below
+│   ├── Dams
+│   ├── FEMA-DDS
+│   ├── FEMA-HRI
+│   └── cb_2022_us_county_5m
+├── requirements.txt                         // Python libraries
+└── website                                  // UI to interface with the data
+    ├── index.html
+    └── style.css
+</pre>
+
+## SET-UP PROJECT
 
 This repo already includes all of the csv/json/photos needed for the project to run, you just need to install/run the following commands
 
@@ -40,9 +107,33 @@ This repo already includes all of the csv/json/photos needed for the project to 
 
 1.) Open the website/index.html file with your browser (this can be done a numerous of ways)
 
+## Change LLM (Optional)
+
+Default LLM is llama3.2:latest as explained above but this project also supports deepseek-r1:8b and gpt-4o-mini
+
+### Deepseek-r1
+1.) Run `ollama run deepseek-r1:8b` in terminal with ollama
+2.) Type `\bye` when installed
+3.) In `api/page.py` change the variable named llm to `"deepseek"`.
+
+### gpt-4o-mini
+1.) Go to [OpenAI API](https://openai.com/api/) and follow instructions to make an API key
+2.) Create a file named `.env` in the root directory of this repo
+3.) In `.env` write the `OPENAI_API_KEY=<your api key>` 
+3.) In `api/page.py` change the variable named llm to `"chatgpt"`.
+
 ## Collect Data:
 
-This is only for those wanting more up-to-date data than 4/15/2025
+This is only for those wanting more up-to-date data than 4/15/2025. 
+
+**Not all files required to update the dataset are included in this repo.**
+
+They are not included as Github prevents large files to be stored in repos.
+
+If interested, these datasets can be found at the following:
+- [FEMA Natural Disaster Log](https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2)
+- [FEMA Hurricane Data](https://hazards.fema.gov/nri/hurricane)
+- [National Inventory of Dams](https://nid.sec.usace.army.mil/#/dams/search/&viewType=map&resultsType=dams&advanced=false&hideList=false&eventSystem=false)
 
 ### Data Collection Set-Up
 

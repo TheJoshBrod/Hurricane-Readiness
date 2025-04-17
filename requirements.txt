@@ -5,3 +5,5 @@ pandas
 ollama
 scikit-learn
 joblib
+openai
+python-dotenv

@@ -3,10 +3,13 @@ from flask_cors import CORS
 
 import json
 import re
+from dotenv import load_dotenv
+import os
 
 import torch
 import pandas as pd
 import ollama
+from openai import OpenAI
 
 import sys
 import os
@@ -25,6 +28,7 @@ data = []
 model = ""
 scaler = ""
 llm = "llama"
+client = ""
 
 app = Flask(__name__)
 CORS(app)
@@ -38,7 +42,6 @@ def clean_deepseek_response(response):
     return response
 
 def generate_json_params(query: str):
-    global deepseek_client
     try: 
         prompt = prompt = f"""You are a weather and climate analyst specializing in hurricane risk assessment.  
                             A local community member has approached you for an evaluation of the hurricane risk in their county.  
@@ -51,7 +54,7 @@ def generate_json_params(query: str):
                             This model requires the following inputs:  
 
                             - population: The total population of the county.  
-                            - buildvalue: The estimated total value of all buildings in the county.  
+                            - buildvalue: The estimated total value of all buildings in the county.
                             - If exact data is unavailable, estimate this based on:  
                                 - Average property values (residential, commercial, industrial).  
                                 - Number of buildings in the county.  
@@ -82,10 +85,19 @@ def generate_json_params(query: str):
                             """
         if llm == "llama":
             response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
-        else:    
+        elif llm == "deepseek":    
             response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
             response = clean_deepseek_response(response)
+        else:
+            response = client.responses.create(
+                model="gpt-4o",
+                instructions="Output the data requested as a json",
+                input=prompt,
+            )
+            response = response.output_text
+    
             
+        
         matches = re.findall(r'```json\n(.*?)\n```', response, re.DOTALL)
     
         for match in matches:
@@ -102,28 +114,42 @@ def generate_json_params(query: str):
             response = json.loads(response)
         
     except Exception as e:
-        print(response)
+        print(e)
+        exit()
         response = generate_json_params(query)
     return response
 
-def auto_create_summary_prompt(prediction, params):
+def clean_llm_to_html(response: str):
+    response = response[response.find("````html")+8:]
+    response = response[:response.find("````")-2]
+    return response    
+
+def auto_create_summary_prompt(prediction, params, context):
     prompt = ""
     prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
+    
     prompt += "You predict the property damage per person per year per county.\n"
-    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction}.\n"
-    prompt += f"Your came to this conclusion through a local citizen coming to you with a description of your county.\n"
-    prompt += f"You had to estimate each of the following piece of information below\n"
+    prompt += f"- You predicted this county's damage per year per person per county is {prediction}.\n"
+    if model == "chatgpt":
+        prompt += f"You made your predictions for the following parameters from speaking with a local citizen who said:\n\n{context}\n\n"
+    prompt += "Through what the local citizen said you either knew or guessed the follow. Explain why you made used these values:\n\n"
     prompt += f"Estimated population is {params['population']}, Estimated value of all buildings in the county is {params['buildvalue']}, "
     prompt += f"Estimated Loss of live per year is {params['hrcn_ealp']}, Estimated average number of hurricanes per year for the last 20 years {params['disaster_per_year_20'] / 20}, "
     prompt += f"Estimated average number of hurricanes per year for the last 10 years {params['disaster_per_year_10'] / 10}, Estimated average number of hurricanes per year for the last 5 years {params['disaster_per_year_5'] / 5}, "
     prompt += f"Estimated average number of hurricanes per year for the last year {params['disaster_per_year_1']}, the Estimated average safety index of {params['mean']}, and Estimated number of dams in this county are {params['count']}.\n\n"
+    
+   
     prompt += f"Give a summary report of why you gave this ranking and why u estimated each value.\n"
     prompt += f"Respond only in the html format below.\n"
 
-    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>\n"
+    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:</h2>\n"
     prompt += "<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n"
-    prompt += "These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"
+    prompt += "<h3>Overall Assessment:</h3>\n"
+    prompt += "<p>These factors combined indicate that this county is at {blank aka low, moderate, high with green, dark orange, or red css color for this one word} risk for significant property damage and disruption to daily life due to hurricanes.</p>\n</div>"
+    with open("test.out", "w") as f:
+        f.write(prompt)
     return prompt
+
 
 @app.route("/auto_predict")
 def auto_predict():
@@ -156,12 +182,20 @@ def auto_predict():
 
     
     print("Generating summary report")
-    prompt = auto_create_summary_prompt(prediction, params)
+    prompt = auto_create_summary_prompt(prediction, params, user_response)
     if llm == "llama":
         response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
-    else:
+    elif llm == "deepseek":    
         response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
         response = clean_deepseek_response(response)
+    else:
+        response = client.responses.create(
+            model="gpt-4o",
+            instructions="Output the data requested as valid html (no extra styling beyond requested)",
+            input=prompt,
+        )
+        response = clean_llm_to_html(response.output_text)
+    
     print(response)
     
     return jsonify({'prediction': prediction, 'response': response})
@@ -172,7 +206,7 @@ def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
     prompt = ""
     prompt += "You are a analyst/economist that helps predict the impact of hurricanes on local communities.\n"
     prompt += "You predict the property damage per person per year per county.\n"
-    prompt += f"Your prediction for this year is that his county's damage per year per person per county is {prediction}.\n"
+    prompt += f"Your prediction for this year is that this county's damage per person in this county is {prediction}.\n"
     prompt += f"Your came to this conclusion through population is {population}, the value of all buildings in the county is {buildvalue}, "
     prompt += f"Estimated Loss of live per year is {hrcn_ealp}, average number of hurricanes per year for the last 20 years {disaster_per_year_20}, "
     prompt += f"average number of hurricanes per year for the last 10 years {disaster_per_year_10}, average number of hurricanes per year for the last 5 years {disaster_per_year_5}, "
@@ -180,9 +214,10 @@ def man_create_summary_prompt( prediction, population, buildvalue, hrcn_ealp,
     prompt += f"Give a summary report of why you gave this ranking.\n"
     prompt += f"Respond only in the html format below.\n"
 
-    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:<h2>\n"
+    prompt += "<div class='summary'><h2>The predicted damage per person per year in this county is ..., based on the following analysis:</h2>\n"
     prompt += "<p><b>Population</b>: With a population of ... explain. {do this for all categories}</p> {each cat is on a new line}\n"
-    prompt += "These factors combined indicate that this county is at {blank} risk for significant property damage and disruption to daily life due to hurricanes.</div>"
+    prompt += "<h3>Overall Assessment:</h3>\n"
+    prompt += "<p>These factors combined indicate that this county is at {blank aka low, moderate, high with green, dark orange, or red css color for this one word} risk for significant property damage and disruption to daily life due to hurricanes.</p>\n</div>"
     return prompt
 
 @app.route("/man_predict")
@@ -224,10 +259,19 @@ def man_predict():
  
     if llm == "llama":
         response = ollama.chat(model='llama3.2:latest', messages=[{'role': 'user', 'content': prompt}])['message']['content']
-    else:
+    elif llm == "deepseek":    
         response = ollama.chat(model='deepseek-r1:8b', messages=[{'role': 'user', 'content': prompt}])['message']['content']
         response = clean_deepseek_response(response)
-    
+    else:
+        response = client.responses.create(
+            model="gpt-4o",
+            instructions="Output the data requested as valid html (no extra styling beyond requested)",
+            input=prompt,
+        )
+        response = clean_llm_to_html(response.output_text)
+        
+
+
     return jsonify({'prediction': prediction, 'response': response})
 
 @app.route("/")
@@ -242,6 +286,11 @@ def homepage():
 
 
 if __name__ == "__main__":
+    if llm == "chatgpt":
+        load_dotenv()
+        client = OpenAI(
+            api_key=os.environ.get("OPENAI_API_KEY"),
+        )
     model = torch.load("predictive_model/model.pth", weights_only=False)
     model.eval()
     scaler = joblib.load('predictive_model/scaler.pkl')

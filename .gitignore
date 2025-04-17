@@ -50,3 +50,4 @@ Icon
 *.csv
 *.json
 
+.env
