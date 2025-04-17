@@ -105,18 +105,18 @@ This repo already includes all of the csv/json/photos needed for the project to 
 
 ### Open the front-end UI
 
-1.) Open the website/index.html file with your browser (this can be done a numerous of ways)
+1.) Open the `website/index.html` file with your browser, this can be done by opening your file explorer and double clicking on the `website/index.html` file
 
-## Change LLM (Optional)
+### Change LLM (Optional)
 
 Default LLM is llama3.2:latest as explained above but this project also supports deepseek-r1:8b and gpt-4o-mini
 
-### Deepseek-r1
+#### Deepseek-r1
 1.) Run `ollama run deepseek-r1:8b` in terminal with ollama
 2.) Type `\bye` when installed
 3.) In `api/page.py` change the variable named llm to `"deepseek"`.
 
-### gpt-4o-mini
+#### gpt-4o-mini
 1.) Go to [OpenAI API](https://openai.com/api/) and follow instructions to make an API key
 2.) Create a file named `.env` in the root directory of this repo
 3.) In `.env` write the `OPENAI_API_KEY=<your api key>` 
