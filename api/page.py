@@ -27,7 +27,7 @@ predictions = []
 data = []
 model = ""
 scaler = ""
-llm = "chatgpt"
+llm = "llama"
 client = ""
 
 app = Flask(__name__)

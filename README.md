@@ -13,12 +13,17 @@ The repository offers the following options:
   Your browser does not support the video tag.
 </video>
 
+
+[Link to video demo](assets/video_demo/Search_Existing_Results.mp4)
+
 - Manually enter your own county's data to see an estimate of property damage per person your county can expect this upcoming year 
 
 <video width="640" height="360" controls>
   <source src="assets/video_demo/Manual_Entry.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+
+[Link to video demo](assets/video_demo/Manual_Entry.mp4)
 
 - Prompt an LLM with the relevant context about your area so it can make a predictition about information about your county (such as Population, Dam count, Hurricane Freq, etc.) to use as an input for the FFNN.
 
@@ -27,6 +32,9 @@ The repository offers the following options:
   Your browser does not support the video tag.
 </video>
 
+[Link to video demo](assets/video_demo/Chatbot_Assisted_Prediction.mp4)
+
+
 - See our methodology
 
 <video width="640" height="360" controls>
@@ -34,6 +42,7 @@ The repository offers the following options:
   Your browser does not support the video tag.
 </video>
 
+[Link to video demo](assets/video_demo/Methodology.mp4)
 
 ****WARNING** in these videos we used gpt-4o-mini, however the instructions below use llama3.2:latest. This discrepancy impacts time for the Manual Entries & Chatbot Assisted Prediction substatially. Read the messages printed from the terminal running `api/page.py` to make sure it is loading correctly.
 
